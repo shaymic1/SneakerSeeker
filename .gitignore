@@ -1,3 +1,5 @@
 *.wbk
 
 indoor_HnS/
+*.pyc
+app/.idea/
