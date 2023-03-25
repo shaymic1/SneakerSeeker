@@ -1,9 +1,6 @@
-from sneaker_seeker import utils
-
+import matplotlib
 
 def main() -> None:
-    utils.print_utils()
-
-
+    print("hello")
 if __name__ == "__main__":
     main()
