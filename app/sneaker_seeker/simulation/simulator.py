@@ -1,36 +1,36 @@
-import matplotlib as plt
-
-from sneaker_seeker.scenario import Scenario
-from sneaker_seeker.players.seeker import Seeker
+from pathlib import Path
+from sneaker_seeker.game_obj.sneaker import Sneaker
+from sneaker_seeker.game_obj.seeker import Seeker
+from sneaker_seeker.visualization.visualizer import Visualizer
+from sneaker_seeker.game_obj.roi import Roi
+from sneaker_seeker import utils
 
 
 class Simulator:
-    def __init__(self, scenario: Scenario) -> None:
+    def __init__(self, scenario: dict, visualizer: Visualizer,
+                 seekers: list[Seeker], sneakers: list[Sneaker]) -> None:
         self.scenario = scenario
-        self.fig, self.axs = Simulator.__make_fig()
+        self.visualizer = visualizer
+        self.seekers = seekers
+        self.sneakers = sneakers
 
+    def __visualize_board(self) -> 'Simulator':
+        self.visualizer.clean()
+        self.visualizer.make_roi(Roi(**self.scenario["roi"]))
+        for seeker in self.seekers:
+            self.visualizer.make_seeker(seeker)
+        for sneaker in self.sneakers:
+            self.visualizer.make_sneaker(sneaker)
 
-    def step(self, seekers: list[Seeker]):
-        pass
+    def step(self, out_path: Path, curr_time: int):
+        self.__visualize_board()
+        fig_full_name = utils.append_time_to_path(out_path, curr_time)
+        self.visualizer.save(fig_full_name)
 
+    def run(self, out_path: Path):
+        curr_time = 0
+        time_step = self.scenario["time_step"]
+        while curr_time <= self.scenario["time_goal"]:
+            self.step(out_path, curr_time)
+            curr_time += time_step
 
-
-    @staticmethod
-    def __make_fig(self):
-        fig = plt.figure(figsize=(15, 15))
-        ax1 = fig.add_subplot(1, 1, 1)
-        axs = [ax1]
-        return fig, axs
-
-
-if __name__ == "__main__":
-    ax.cla()
-    ax.set_title(f'SneakerSeeker')
-
-    # Create a Rectangle patch, represents the map boundaries
-    boundaries = plt.patches.Rectangle((0, 0), self.scenario.board_width, self.scenario.board_height,
-                                              linewidth=1, edgecolor='grey', facecolor='none')
-
-    ax.set_xlim([-Configuration.world_plot_margin,
-                 Configuration.WORLD_SIZE_X + Configuration.world_plot_margin])
-    ax.set_ylim([-Configuration.world_plot_margin, Configuration.WORLD_SIZE_Y + Configuration.world_plot_margin])

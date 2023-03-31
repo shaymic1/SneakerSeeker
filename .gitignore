@@ -4,3 +4,4 @@ indoor_HnS/
 *.pyc
 app/.idea/
 app/TODO
+app/output/

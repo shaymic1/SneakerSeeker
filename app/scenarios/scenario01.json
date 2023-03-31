@@ -1,8 +1,56 @@
 {
-  "seekers_num": 10,
-  "sneakers_num": 10,
-  "time_goal": 240,
-  "board_width": 4,
-  "board_height": 4
+  "seekers_num": 1,
+  "sneakers_num": 1,
+  "time_goal": 24,
+  "time_step": 1,
+
+  "canvas": {
+    "figsize": 15,
+    "width": 6000,
+    "height": 6000,
+    "margin": 1000,
+    "name": "SneakerSeeker",
+    "xlabel": "x [m]",
+    "ylabel": "y [m]"
+  },
+
+  "roi": {
+    "x": 0,
+    "y": 0,
+    "height": 4000,
+    "width": 4000,
+    "linewidth": 1,
+    "edgecolor": "green",
+    "facecolor": "none"
+  },
+
+  "seeker": {
+    "speed": {
+      "cruise": 10,
+      "max": 20,
+      "max_time": 10
+    },
+    "location": {
+      "x": 1500,
+      "y": 1500
+    },
+    "los": 600,
+    "fov": 120
+  },
+
+  "sneaker": {
+    "speed": {
+      "cruise": 10,
+      "max": 20,
+      "max_time": 10
+    },
+    "location": {
+      "x": 4500,
+      "y": 4500
+    },
+    "los": 100,
+    "fov": 360
+  }
 }
+
 
