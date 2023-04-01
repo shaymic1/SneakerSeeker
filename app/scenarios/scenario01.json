@@ -1,11 +1,11 @@
 {
   "seekers_num": 1,
   "sneakers_num": 1,
-  "time_goal": 24,
-  "time_step": 1,
+  "time_goal_ms": 10000,
+  "time_step_ms": 100,
 
   "canvas": {
-    "figsize": 15,
+    "figsize": {"width": 15, "height": 15},
     "width": 6000,
     "height": 6000,
     "margin": 1000,

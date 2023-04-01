@@ -1,9 +1,11 @@
 from pathlib import Path
-from sneaker_seeker.game_obj.sneaker import Sneaker
-from sneaker_seeker.game_obj.seeker import Seeker
-from sneaker_seeker.visualization.visualizer import Visualizer
-from sneaker_seeker.game_obj.roi import Roi
+
 from sneaker_seeker import utils
+from sneaker_seeker.game_obj.roi import Roi
+from sneaker_seeker.game_obj.seeker import Seeker
+from sneaker_seeker.game_obj.sneaker import Sneaker
+from sneaker_seeker.visualization.visualizer import Visualizer
+
 
 
 class Simulator:
@@ -22,15 +24,15 @@ class Simulator:
         for sneaker in self.sneakers:
             self.visualizer.make_sneaker(sneaker)
 
-    def step(self, out_path: Path, curr_time: int):
+    def step(self, out_path: Path, curr_time: int) -> None:
         self.__visualize_board()
         fig_full_name = utils.append_time_to_path(out_path, curr_time)
         self.visualizer.save(fig_full_name)
 
-    def run(self, out_path: Path):
+    def run(self, out_path: Path) -> None:
         curr_time = 0
-        time_step = self.scenario["time_step"]
-        while curr_time <= self.scenario["time_goal"]:
+        time_step = self.scenario["time_step_ms"]
+        while curr_time <= self.scenario["time_goal_ms"]:
             self.step(out_path, curr_time)
             curr_time += time_step
 

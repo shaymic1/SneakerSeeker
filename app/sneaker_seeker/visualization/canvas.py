@@ -11,10 +11,10 @@ from sneaker_seeker.game_obj.seeker import Seeker
 
 class Canvas(Visualizer):
     def __init__(self, height: int, width: int, margin: int, name: str,
-                 xlabel: str, ylabel: str, figsize: int) -> None:
+                 xlabel: str, ylabel: str, figsize: dict) -> None:
         self.height = height
         self.width = width
-        self.fig, self.ax = self.__make_fig(figsize)
+        self.fig, self.ax = self.__make_fig(**figsize)
         self.margin = margin
         self.name = name
         self.xlabel = xlabel
@@ -23,8 +23,8 @@ class Canvas(Visualizer):
 
 
     @staticmethod
-    def __make_fig(figsize) -> Union[any, plt.Axes]:
-        fig = plt.figure(figsize=(figsize, figsize))
+    def __make_fig(width: int, height: int) -> Union[any, plt.Axes]:
+        fig = plt.figure(figsize=(width, height))
         return fig, fig.add_subplot(1, 1, 1)
 
     def __init(self) -> None:
