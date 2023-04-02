@@ -24,15 +24,16 @@ class Simulator:
         for sneaker in self.sneakers:
             self.visualizer.make_sneaker(sneaker)
 
-    def step(self, out_path: Path, curr_time: int) -> None:
+    def step(self, out_path: Path, curr_time: int, should_record_step: bool = True) -> None:
         self.__visualize_board()
-        fig_full_name = utils.append_time_to_path(out_path, curr_time)
-        self.visualizer.save(fig_full_name)
+        if should_record_step:
+            fig_full_name = utils.append_time_to_path(out_path, curr_time)
+            self.visualizer.save(fig_full_name)
 
-    def run(self, out_path: Path) -> None:
+    def run(self, out_path: Path, save_every_n_frames: int) -> None:
         curr_time = 0
         time_step = self.scenario["time_step_ms"]
         while curr_time <= self.scenario["time_goal_ms"]:
-            self.step(out_path, curr_time)
+            self.step(out_path, curr_time, should_record_step=curr_time % (time_step * save_every_n_frames) == 0)
             curr_time += time_step
 
