@@ -2,6 +2,7 @@ import matplotlib
 
 from sneaker_seeker.game_obj.player import Player
 
+
 class Seeker(Player):
 
     def __init__(self, location: dict, speed: dict, direction: float = None,

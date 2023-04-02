@@ -7,7 +7,6 @@ from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.roi import Roi
 
-
 SCENARIO_NAME = "scenario01"
 SAVE_EVERY_N_FRAME = 10
 VIDEO_X_SPEED = 1

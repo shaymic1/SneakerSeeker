@@ -10,5 +10,3 @@ class Sneaker(Player):
         super().__init__(location, speed, direction, los, fov)
         self.detected = False
         self.id = None
-
-

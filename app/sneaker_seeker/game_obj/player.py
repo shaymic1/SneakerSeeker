@@ -11,3 +11,4 @@ class Player(ABC):
         self.direction: float = direction if direction else np.random.uniform(low=-np.pi, high=np.pi)
         self.los: float = los
         self.fov: float = fov
+

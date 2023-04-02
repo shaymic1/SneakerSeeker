@@ -19,17 +19,20 @@ class JsonReader:
             print(type(e), e, sep='\n')
             exit(-1)
 
+
 def my_timer(orig_fun):
     import time
     from functools import wraps
-    @wraps(orig_fun) #will prevent the stacking problem to occure
+    @wraps(orig_fun)  # will prevent the stacking problem to occure
     def wrapper(*args, **kwargs):
         start = time.time()
         result = orig_fun(*args, **kwargs)
         time_took = round(time.time() - start, 4)
         print(f'{orig_fun.__name__} Run in {time_took} sec')
         return result
+
     return wrapper
+
 
 def read_json(fname: str = 'config.json') -> dict:
     try:
@@ -59,4 +62,3 @@ def make_output_path(outputdir: str, scenario_name: str, empty_output_path: bool
         for f in glob.glob(os.path.join(out, '*.*')):
             os.remove(f)
     return out
-
