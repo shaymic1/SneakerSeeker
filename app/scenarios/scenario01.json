@@ -5,7 +5,7 @@
   "time_step_ms": 100,
 
   "canvas": {
-    "figsize": {"width": 15, "height": 15},
+    "figsize": {"width": 16, "height": 9},
     "width": 6000,
     "height": 6000,
     "margin": 1000,
@@ -17,8 +17,8 @@
   "roi": {
     "x": 0,
     "y": 0,
-    "height": 4000,
-    "width": 4000,
+    "height": 5000,
+    "width": 5000,
     "linewidth": 1,
     "edgecolor": "green",
     "facecolor": "none"
@@ -26,9 +26,10 @@
 
   "seeker": {
     "speed": {
-      "cruise": 10,
-      "max": 20,
-      "max_time": 10
+      "curr_speed": 50,
+      "cruise": 50,
+      "max": 100,
+      "max_time": 20
     },
     "location": {
       "x": 1500,
@@ -40,9 +41,10 @@
 
   "sneaker": {
     "speed": {
-      "cruise": 10,
-      "max": 20,
-      "max_time": 10
+      "curr_speed": 50,
+      "cruise": 50,
+      "max": 50,
+      "max_time": 0
     },
     "location": {
       "x": 4500,

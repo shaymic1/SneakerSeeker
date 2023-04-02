@@ -52,8 +52,8 @@ def make_video(frames_dir: Path, video_name: str, fps: int) -> None:
     out.release()
 
 
-def make_output_path(outputdir: str, SCENARIO_NAME: str, empty_output_path: bool = True) -> Path:
-    out = Path(os.getcwd()) / outputdir / SCENARIO_NAME
+def make_output_path(outputdir: str, scenario_name: str, empty_output_path: bool = True) -> Path:
+    out = Path(os.getcwd()) / outputdir / scenario_name
     out.mkdir(parents=True, exist_ok=True)
     if empty_output_path:
         for f in glob.glob(os.path.join(out, '*.*')):

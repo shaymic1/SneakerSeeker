@@ -9,6 +9,7 @@ class Location:
 
 @dataclass
 class Speed:
+    curr_speed: float = 50
     cruise: float = 55
     max: float = 100
     max_time: float = 20

@@ -5,6 +5,8 @@ from sneaker_seeker.simulation.simulator import Simulator
 from sneaker_seeker.visualization.canvas import Canvas
 from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.sneaker import Sneaker
+from sneaker_seeker.game_obj.roi import Roi
+
 
 SCENARIO_NAME = "scenario01"
 SAVE_EVERY_N_FRAME = 10
@@ -15,10 +17,12 @@ VIDEO_X_SPEED = 1
 def main() -> None:
     config = utils.read_json("config.json")
     scenario = utils.read_json(f"scenarios/{SCENARIO_NAME}.json")
-    out_path = utils.make_output_path(config["outputdir"], SCENARIO_NAME, empty_output_path=True)
+    out_path = utils.make_output_path(outputdir=config["outputdir"], scenario_name=SCENARIO_NAME,
+                                      empty_output_path=True)
 
     simulator = Simulator(scenario=scenario,
                           visualizer=Canvas(**scenario["canvas"]),
+                          roi=Roi(**scenario["roi"]),
                           seekers=[Seeker(**scenario["seeker"]) for _ in range(scenario["seekers_num"])],
                           sneakers=[Sneaker(**scenario["sneaker"]) for _ in range(scenario["sneakers_num"])])
 

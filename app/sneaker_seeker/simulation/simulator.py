@@ -7,18 +7,18 @@ from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.visualization.visualizer import Visualizer
 
 
-
 class Simulator:
     def __init__(self, scenario: dict, visualizer: Visualizer,
-                 seekers: list[Seeker], sneakers: list[Sneaker]) -> None:
+                 roi: Roi, seekers: list[Seeker], sneakers: list[Sneaker]) -> None:
         self.scenario = scenario
         self.visualizer = visualizer
+        self.roi = roi
         self.seekers = seekers
         self.sneakers = sneakers
 
     def __visualize_board(self) -> 'Simulator':
         self.visualizer.clean()
-        self.visualizer.make_roi(Roi(**self.scenario["roi"]))
+        self.visualizer.make_roi(self.roi)
         for seeker in self.seekers:
             self.visualizer.make_seeker(seeker)
         for sneaker in self.sneakers:
