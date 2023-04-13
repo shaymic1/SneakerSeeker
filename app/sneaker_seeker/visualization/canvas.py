@@ -29,7 +29,7 @@ class Canvas(Visualizer):
 
     def __init(self) -> None:
         self.ax.cla()
-        self.ax.set_title(self.name)
+        self.fig.suptitle(self.name)
         self.ax.set_aspect('equal')
         self.ax.set_xlabel(self.xlabel)
         self.ax.set_ylabel(self.ylabel)
@@ -44,6 +44,9 @@ class Canvas(Visualizer):
 
     def make_roi(self, roi: Roi):
         self.ax.add_patch(roi.rectangle)
+
+    def time_stamp(self, curr_time):
+        self.ax.set_title(f"time[sec]: {curr_time/1000:.1f}")
 
     def make_seeker(self, seeker: Seeker):
         self.ax.add_patch(

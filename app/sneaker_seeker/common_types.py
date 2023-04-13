@@ -3,13 +3,18 @@ from dataclasses import dataclass
 
 @dataclass
 class Location:
-    x: int = 0
-    y: int = 0
+    x: float = 0
+    y: float = 0
+
+
+@dataclass
+class PhysicalSpecs:
+    cruise_speed: float = 55
+    max_speed: float = 100
+    max_speed_time: float = 20
 
 
 @dataclass
 class Speed:
-    curr_speed: float = 50
-    cruise: float = 55
-    max: float = 100
-    max_time: float = 20
+    vx: float = 1
+    vy: float = 1

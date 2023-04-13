@@ -43,10 +43,11 @@ def read_json(fname: str = 'config.json') -> dict:
 
 
 def append_time_to_path(out_path: Path, time: int) -> Path:
-    return Path(f"{str(out_path)}_{str(time).zfill(5)}")
+    return Path(f"{str(Path(out_path / 'fig'))}_{str(time).zfill(9)}")
 
 
-def make_video(frames_dir: Path, video_name: str, fps: int) -> None:
+@my_timer
+def make_video(frames_dir: Path, video_name: str, fps: float) -> None:
     frames = [cv2.imread(f) for f in glob.glob(os.path.join(frames_dir, '*.png'))]
     frame_size = (frames[0].shape[1], frames[0].shape[0])
     out = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*'DIVX'), fps=fps, frameSize=frame_size)
@@ -62,3 +63,7 @@ def make_output_path(outputdir: str, scenario_name: str, empty_output_path: bool
         for f in glob.glob(os.path.join(out, '*.*')):
             os.remove(f)
     return out
+
+
+def real_time_fps(time_step_ms, save_frame_every_n_step) -> float:
+    return 1000 / (time_step_ms * save_frame_every_n_step)

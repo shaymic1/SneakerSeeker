@@ -22,3 +22,6 @@ class Visualizer(ABC):
 
     def make_sneaker(self, sneaker: Sneaker):
         pass
+
+    def time_stamp(self, curr_time):
+        pass
