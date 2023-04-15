@@ -35,6 +35,7 @@ class Canvas(Visualizer):
         self.ax.set_ylabel(self.ylabel)
         self.ax.set_xlim([-self.margin, self.width + self.margin])
         self.ax.set_ylim([-self.margin, self.height + self.margin])
+        self.ax.set_aspect("auto", adjustable="box", anchor="C")
 
     def save(self, path: Path):
         plt.savefig(path)
