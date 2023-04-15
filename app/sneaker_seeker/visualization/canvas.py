@@ -12,14 +12,14 @@ from sneaker_seeker.game_obj.seeker import Seeker
 
 class Canvas(Visualizer):
     def __init__(self, height: int, width: int, margin: int, name: str,
-                 xlabel: str, ylabel: str, figsize: dict) -> None:
+                 x_label: str, y_label: str, fig_size: dict) -> None:
         self.height = height
         self.width = width
-        self.fig, self.ax = self.__make_fig(**figsize)
+        self.fig, self.ax = self.__make_fig(**fig_size)
         self.margin = margin
         self.name = name
-        self.xlabel = xlabel
-        self.ylabel = ylabel
+        self.x_label = x_label
+        self.y_label = y_label
         self.__init()
 
     @staticmethod
@@ -31,8 +31,8 @@ class Canvas(Visualizer):
         self.ax.cla()
         self.fig.suptitle(self.name)
         self.ax.set_aspect('equal')
-        self.ax.set_xlabel(self.xlabel)
-        self.ax.set_ylabel(self.ylabel)
+        self.ax.set_xlabel(self.x_label)
+        self.ax.set_ylabel(self.y_label)
         self.ax.set_xlim([-self.margin, self.width + self.margin])
         self.ax.set_ylim([-self.margin, self.height + self.margin])
         self.ax.set_aspect("auto", adjustable="box", anchor="C")
@@ -47,7 +47,7 @@ class Canvas(Visualizer):
         self.ax.add_patch(roi.rectangle)
 
     def time_stamp(self, curr_time):
-        self.ax.set_title(f"time[sec]: {curr_time/1000:.1f}")
+        self.ax.set_title(f"time[sec]: {curr_time / 1000:.1f}")
 
     def make_seeker(self, seeker: Seeker):
         self.ax.add_patch(
@@ -69,7 +69,8 @@ class Canvas(Visualizer):
             matplotlib.patches.Wedge(center=(sneaker.location.x, sneaker.location.y), r=sneaker.los,
                                      theta1=(sneaker.direction - sneaker.fov / 2),
                                      theta2=(sneaker.direction + sneaker.fov / 2),
-                                     facecolor="red", alpha=0.5 if sneaker.detected else 0.1))
+                                     facecolor="green" if sneaker.is_detected() else "red",
+                                     alpha=0.5 if sneaker.is_detected() else 0.1))
         self.ax.plot(sneaker.location.x, sneaker.location.y,
                      marker=(3, 0, sneaker.direction - 90),  # directed triangle
                      color="red",

@@ -1,19 +1,19 @@
 {
-  "seekers_num": 1,
+  "seekers_num": 2,
   "sneakers_num": 1,
   "seekers_path_planner": "straight_line",
   "sneakers_path_planner": "straight_line",
   "time_goal_ms": 120000,
-  "time_step_ms": 100,
+  "time_step_ms": 500,
 
   "canvas": {
-    "figsize": {"width": 16, "height": 9},
-    "width": 6000,
+    "fig_size": {"width": 16, "height": 9},
+    "width": 13000,
     "height": 6000,
     "margin": 1000,
     "name": "SneakerSeeker",
-    "xlabel": "x [m]",
-    "ylabel": "y [m]"
+    "x_label": "x [m]",
+    "y_label": "y [m]"
   },
 
   "roi": {
