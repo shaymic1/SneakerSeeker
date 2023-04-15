@@ -14,7 +14,7 @@ class Player(ABC):
         self.physical_specs: PhysicalSpecs = PhysicalSpecs(**physical_specs)
         self.location: Location = Location(**location)
         self.speed: Speed = Speed(**speed) if speed else Speed()
-        self.direction: float = direction if direction else math.degrees(math.atan(self.speed.vy/self.speed.vy))
+        self.direction: float = direction if direction else utils.calc_angle(self.speed.vy, self.speed.vx)
         self.los: float = los
         self.fov: float = fov
 
