@@ -28,8 +28,8 @@ def main() -> None:
     path_planners = {Seeker: PathPlannerFactory.create_path_planner(scenario["seekers_path_planner"], **game_objects),
                      Sneaker: PathPlannerFactory.create_path_planner(scenario["sneakers_path_planner"], **game_objects)}
 
-    simulator = Simulator(scenario=scenario, path_planners=path_planners, **game_objects)
-    simulator.run(out_path=out_path, save_frame_every_n_step=SAVE_FRAME_EVERY_N_STEP)
+    simulator = Simulator(out_path=out_path, scenario=scenario, path_planners=path_planners, **game_objects)
+    simulator.run(save_frame_every_n_step=SAVE_FRAME_EVERY_N_STEP)
 
     utils.make_video(frames_dir=out_path, video_name=f"{SCENARIO_NAME}.avi",
                      fps=(VID_SPEEDUP_FACTOR * utils.real_time_fps(scenario['time_step_ms'], SAVE_FRAME_EVERY_N_STEP)))
