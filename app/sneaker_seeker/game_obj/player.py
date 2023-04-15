@@ -1,5 +1,7 @@
 import math
 from abc import ABC
+
+from sneaker_seeker import utils
 from sneaker_seeker.common_types import Location, PhysicalSpecs, Speed
 import numpy as np
 
@@ -18,3 +20,6 @@ class Player(ABC):
         self.los: float = los
         self.fov: float = fov
 
+    def move(self, dt: float):
+        self.location.x += self.speed.vx * dt
+        self.location.y += self.speed.vy * dt
