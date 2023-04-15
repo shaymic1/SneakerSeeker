@@ -19,14 +19,13 @@ class Simulator:
         self.sneakers = sneakers
         self.players = list(seekers + sneakers)
 
-    def __set_players_direction_and_speed(self):
+    def __set_players_path(self):
         for player in self.players:
             self.path_planners[type(player)].set_path(player)
 
-    def __move_players(self, time_sec: int):
+    def __move_players(self, dt: int):
         for player in self.players:
-            player.location.x += player.speed.vx * time_sec
-            player.location.y += player.speed.vy * time_sec
+            player.move(dt)
 
     def __visualize_board(self, curr_time: int) -> 'Simulator':
         self.visualizer.clean()
@@ -38,8 +37,9 @@ class Simulator:
             self.visualizer.make_sneaker(sneaker)
 
     def __step(self, out_path: Path, curr_time: int, should_record_step: bool = True) -> None:
-        self.__set_players_direction_and_speed()
-        self.__move_players(self.scenario["time_step_ms"]/1000)
+        self.__set_players_path()
+        self.__move_players(dt=self.scenario["time_step_ms"]/1000)
+        self.__check_for_detections()
         self.__visualize_board(curr_time)
         if should_record_step:
             fig_full_name = utils.append_time_to_path(out_path, curr_time)
@@ -53,7 +53,13 @@ class Simulator:
             self.__step(out_path, curr_time, should_record_step=curr_time % (time_step * save_frame_every_n_step) == 0)
             curr_time += time_step
 
-
+    def __check_for_detections(self):
+        still_unknown_sneakers = [s for s in self.sneakers if s.is_undetected()]
+        for sneaker in still_unknown_sneakers:
+            for seeker in self.seekers:
+                if seeker.can_see(sneaker.location):
+                    sneaker.detect()
+        return any([s.is_detected() for s in still_unknown_sneakers])
 
 
 

@@ -1,4 +1,5 @@
 import glob
+import math
 from functools import wraps
 import os
 from pathlib import Path
@@ -67,3 +68,7 @@ def make_output_path(outputdir: str, scenario_name: str, empty_output_path: bool
 
 def real_time_fps(time_step_ms, save_frame_every_n_step) -> float:
     return 1000 / (time_step_ms * save_frame_every_n_step)
+
+
+def calc_angle(x: float, y: float) -> float:
+    return math.degrees(math.atan2(y, x))
