@@ -4,7 +4,7 @@ from sneaker_seeker.game_obj import Roi, Player
 import numpy as np
 
 
-class PathPlannerRandom(PathPlanner):
+class PathPlannerRandomWalk(PathPlanner):
     def __init__(self, roi: Roi, **_ignore) -> None:
         self.roi = roi
 

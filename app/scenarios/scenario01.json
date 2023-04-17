@@ -37,8 +37,8 @@
       "y": 1500
     },
     "speed":{
-      "vx": 30,
-      "vy": 30
+      "_magnitude": 50,
+      "_direction": 45
     },
     "los": 600,
     "fov": 120

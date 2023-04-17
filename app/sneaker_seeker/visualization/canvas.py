@@ -52,30 +52,30 @@ class Canvas(Visualizer):
     def make_seeker(self, seeker: Seeker):
         self.ax.add_patch(
             matplotlib.patches.Wedge(center=(seeker.location.x, seeker.location.y), r=seeker.los,
-                                     theta1=(seeker.direction - seeker.fov / 2),
-                                     theta2=(seeker.direction + seeker.fov / 2),
+                                     theta1=(seeker.observation_direction - seeker.fov / 2),
+                                     theta2=(seeker.observation_direction + seeker.fov / 2),
                                      facecolor="blue", alpha=0.1))
         self.ax.plot(seeker.location.x, seeker.location.y,
-                     marker=(3, 0, seeker.direction - 90),  # directed triangle
+                     marker=(3, 0, seeker.speed.direction - 90),  # directed triangle
                      color="blue",
                      markersize=5, markerfacecolor="blue", alpha=.5)
         self.ax.plot(seeker.location.x, seeker.location.y,
-                     marker=(2, 0, seeker.direction - 90),  # directed line
+                     marker=(2, 0, seeker.speed.direction - 90),  # directed line
                      color="blue",
                      markersize=10, markerfacecolor="blue", alpha=.4)
 
     def make_sneaker(self, sneaker: Sneaker):
         self.ax.add_patch(
             matplotlib.patches.Wedge(center=(sneaker.location.x, sneaker.location.y), r=sneaker.los,
-                                     theta1=(sneaker.direction - sneaker.fov / 2),
-                                     theta2=(sneaker.direction + sneaker.fov / 2),
+                                     theta1=(sneaker.observation_direction - sneaker.fov / 2),
+                                     theta2=(sneaker.observation_direction + sneaker.fov / 2),
                                      facecolor="green" if sneaker.is_detected() else "red",
                                      alpha=0.5 if sneaker.is_detected() else 0.1))
         self.ax.plot(sneaker.location.x, sneaker.location.y,
-                     marker=(3, 0, sneaker.direction - 90),  # directed triangle
+                     marker=(3, 0, sneaker.speed.direction - 90),  # directed triangle
                      color="red",
                      markersize=5, markerfacecolor="red", alpha=.5)
         self.ax.plot(sneaker.location.x, sneaker.location.y,
-                     marker=(2, 0, sneaker.direction - 90),  # directed line
+                     marker=(2, 0, sneaker.speed.direction - 90),  # directed line
                      color="red",
                      markersize=10, markerfacecolor="red", alpha=.4)

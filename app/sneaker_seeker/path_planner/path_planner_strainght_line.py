@@ -1,8 +1,9 @@
+import random
+
 from .path_planner import PathPlanner
 from sneaker_seeker.game_obj import Roi, Player
-from sneaker_seeker.common_types import Speed
+from sneaker_seeker.common_types import SpeedVec
 from sneaker_seeker import utils
-import math
 
 
 class PathPlannerStraightLine(PathPlanner):
@@ -14,8 +15,6 @@ class PathPlannerStraightLine(PathPlanner):
         # set the player's speed only once using tracked_players dict.
         if player.id not in self.tracked_players.keys():
             self.tracked_players[player.id] = player.id
-            if player.speed.vx == player.speed.vy == 0:
-                vx = math.sqrt(player.physical_specs.cruise_speed)
-                vy = math.sqrt(player.physical_specs.cruise_speed)
-                player.speed = Speed(vx, vy)
-                player.direction = utils.calc_angle(y=vy, x=vx)
+            if player.speed.magnitude == 0:
+                player.speed = SpeedVec(_magnitude=player.physical_specs.max_speed, _direction=random.uniform(0, 360))
+                player.observation_direction = utils.calc_angle(y=player.speed.vy, x=player.speed.vx)
