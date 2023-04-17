@@ -1,15 +1,11 @@
-from pathlib import Path
-
 from sneaker_seeker import utils
-from sneaker_seeker.path_planner.path_planner import StraightLinePathPlanner, RandomPathPlanner, PathPlannerFactory
-from sneaker_seeker.simulation.simulator import Simulator
-from sneaker_seeker.visualization.canvas import Canvas
-from sneaker_seeker.game_obj.seeker import Seeker
-from sneaker_seeker.game_obj.sneaker import Sneaker
-from sneaker_seeker.game_obj.roi import Roi
+from sneaker_seeker.path_planner import PathPlannerFactory
+from sneaker_seeker.simulation import Simulator
+from sneaker_seeker.visualization import Canvas
+from sneaker_seeker.game_obj import Roi, Sneaker, Seeker
 
 SCENARIO_NAME = "scenario01"
-SAVE_FRAME_EVERY_N_STEP = 1
+SAVE_FRAME_EVERY_N_STEP = 5
 VID_SPEEDUP_FACTOR = 1
 
 
@@ -25,8 +21,8 @@ def main() -> None:
                     "seekers": [Seeker(**scenario["seeker"]) for _ in range(scenario["seekers_num"])],
                     "sneakers": [Sneaker(**scenario["sneaker"]) for _ in range(scenario["sneakers_num"])]}
 
-    path_planners = {Seeker: PathPlannerFactory.create_path_planner(scenario["seekers_path_planner"], **game_objects),
-                     Sneaker: PathPlannerFactory.create_path_planner(scenario["sneakers_path_planner"], **game_objects)}
+    path_planners = {Seeker: PathPlannerFactory.create(scenario["seekers_path_planner"], **game_objects),
+                     Sneaker: PathPlannerFactory.create(scenario["sneakers_path_planner"], **game_objects)}
 
     simulator = Simulator(out_path=out_path, scenario=scenario, path_planners=path_planners, **game_objects)
     simulator.run(save_frame_every_n_step=SAVE_FRAME_EVERY_N_STEP)
@@ -37,4 +33,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
