@@ -1,4 +1,5 @@
-from sneaker_seeker.common_types import Location, SpeedVec
+from sneaker_seeker.common_types.speed_vec import SpeedVec
+from sneaker_seeker.common_types.location import Location
 
 
 class Movable:

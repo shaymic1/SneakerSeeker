@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from sneaker_seeker.game_obj import Player
+from sneaker_seeker.game_obj.player import Player
 
 
 class PathPlanner(ABC):

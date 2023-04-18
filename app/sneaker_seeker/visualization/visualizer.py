@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from sneaker_seeker.game_obj import Seeker, Sneaker, ROI, DKIZ
+from sneaker_seeker.game_obj.sneaker import Sneaker
+from sneaker_seeker.game_obj.seeker import Seeker
+from sneaker_seeker.game_obj.game_ROI import ROI
+from sneaker_seeker.game_obj.sneaker_DKIZ import DKIZ
 
 
 class Visualizer(ABC):

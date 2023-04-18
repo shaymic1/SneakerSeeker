@@ -1,9 +1,7 @@
 from enum import Enum, auto
 
-import matplotlib
-
 from sneaker_seeker.game_obj.player import Player
-from sneaker_seeker.common_types import SpeedVec
+from sneaker_seeker.common_types.speed_vec import SpeedVec
 
 
 class Sneaker(Player):

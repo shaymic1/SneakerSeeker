@@ -1,7 +1,5 @@
-from abc import ABC
-
 from .movable import Movable
-from sneaker_seeker.common_types import PhysicalSpecs
+from sneaker_seeker.common_types.physical_specs import PhysicalSpecs
 
 
 class Player(Movable):

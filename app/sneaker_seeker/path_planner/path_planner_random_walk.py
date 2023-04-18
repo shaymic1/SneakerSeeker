@@ -1,5 +1,6 @@
 from .path_planner import PathPlanner
-from sneaker_seeker.game_obj import ROI, Player
+from sneaker_seeker.game_obj.game_ROI import ROI
+from sneaker_seeker.game_obj.player import Player
 
 import numpy as np
 

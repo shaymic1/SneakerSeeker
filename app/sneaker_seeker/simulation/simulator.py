@@ -1,7 +1,10 @@
 from pathlib import Path
 
 from sneaker_seeker import utils
-from sneaker_seeker.game_obj import Sneaker, Seeker, ROI, DKIZ
+from sneaker_seeker.game_obj.sneaker import Sneaker
+from sneaker_seeker.game_obj.seeker import Seeker
+from sneaker_seeker.game_obj.game_ROI import ROI
+from sneaker_seeker.game_obj.sneaker_DKIZ import DKIZ
 from sneaker_seeker.path_planner.path_planner import PathPlanner
 from sneaker_seeker.visualization.visualizer import Visualizer
 

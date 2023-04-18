@@ -1,9 +1,6 @@
-import math
-
-import matplotlib
-
 from sneaker_seeker.game_obj.player import Player
-from sneaker_seeker.common_types import SpeedVec, Location
+from sneaker_seeker.common_types.location import Location
+from sneaker_seeker.common_types.speed_vec import SpeedVec
 
 
 class Seeker(Player):

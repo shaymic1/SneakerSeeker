@@ -1,8 +1,12 @@
 from sneaker_seeker import utils
-from sneaker_seeker.path_planner import PathPlannerFactory
-from sneaker_seeker.simulation import Simulator  # , PlayerDeployer
-from sneaker_seeker.visualization import Canvas
-from sneaker_seeker.game_obj import ROI, DKIZ, Sneaker, Seeker
+from sneaker_seeker.path_planner.path_planner_factory import PathPlannerFactory
+from sneaker_seeker.game_obj.seeker import Seeker
+from sneaker_seeker.game_obj.sneaker import Sneaker
+from sneaker_seeker.game_obj.sneaker_DKIZ import DKIZ
+from sneaker_seeker.game_obj.game_ROI import ROI
+from sneaker_seeker.visualization.canvas import Canvas
+from sneaker_seeker.simulation.simulator import Simulator
+
 
 SCENARIO_NAME = "scenario01"
 SAVE_FRAME_EVERY_N_STEP = 5
