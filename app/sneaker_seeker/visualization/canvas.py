@@ -43,8 +43,11 @@ class Canvas(Visualizer):
     def clean(self):
         self.__init()
 
-    def make_roi(self, roi: Roi):
+    def make_ROI(self, roi: ROI):
         self.ax.add_patch(roi.rectangle)
+
+    def make_DKIZ(self, dkiz: DKIZ):
+        self.ax.add_patch(dkiz.shape)
 
     def time_stamp(self, curr_time):
         self.ax.set_title(f"time[sec]: {curr_time / 1000:.1f}")

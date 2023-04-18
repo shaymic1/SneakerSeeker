@@ -14,7 +14,10 @@ class Visualizer(ABC):
     def clean(self):
         pass
 
-    def make_roi(self, roi: Roi):
+    def make_ROI(self, roi: ROI):
+        pass
+
+    def make_DKIZ(self, dkiz: DKIZ):
         pass
 
     def make_seeker(self, seeker: Seeker):
