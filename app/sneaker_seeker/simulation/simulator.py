@@ -18,7 +18,7 @@ class Simulator:
         self.seekers = seekers
         self.sneakers = sneakers
         self.players = list(seekers + sneakers)
-        self.set_initial_deployment()
+        # self.set_initial_deployment()
 
     def __set_players_path(self):
         for player in self.players:
@@ -63,5 +63,5 @@ class Simulator:
                     sneaker.detect()
         return any([s.is_detected() for s in still_unknown_sneakers])
 
-    def set_initial_deployment(self):
-        for player in self.sneakers:
+    # def set_initial_deployment(self):
+    #     for player in self.sneakers:

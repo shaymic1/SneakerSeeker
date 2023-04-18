@@ -4,11 +4,15 @@ from .path_planner_strainght_line import PathPlannerStraightLine
 
 
 class PathPlannerFactory:
+    __path_planners = {'straight_line': PathPlannerStraightLine,
+                       'random_walk': PathPlannerRandomWalk}
+
     @staticmethod
     def create(planner_type: str, **kwargs) -> PathPlanner:
-        if planner_type == 'straight_line':
-            return PathPlannerStraightLine(**kwargs)
-        elif planner_type == 'random_walk':
-            return PathPlannerRandomWalk(**kwargs)
-        else:
+        if planner_type not in PathPlannerFactory.__path_planners:
             raise ValueError(f'Invalid planner_type: {planner_type}')
+        return PathPlannerFactory.__path_planners[planner_type](**kwargs)
+
+    @staticmethod
+    def add_path_planner(self, planner_type: str, planner) -> None:
+        PathPlannerFactory.__path_planners[planner_type] = planner
