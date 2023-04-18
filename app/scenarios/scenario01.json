@@ -1,8 +1,4 @@
 {
-  "seekers_num": 2,
-  "sneakers_num": 1,
-  "seekers_path_planner": "straight_line",
-  "sneakers_path_planner": "straight_line",
   "time_goal_ms": 120000,
   "time_step_ms": 500,
 
@@ -16,7 +12,7 @@
     "y_label": "y [m]"
   },
 
-  "roi": {
+  "ROI": {
     "x": 0,
     "y": 0,
     "height": 5000,
@@ -26,36 +22,46 @@
     "facecolor": "none"
   },
 
+
   "seeker": {
-    "physical_specs": {
-      "cruise_speed": 50,
-      "max_speed": 100,
-      "max_speed_time": 20
-    },
-    "location": {
-      "x": 1500,
-      "y": 1500
-    },
-    "speed":{
-      "_magnitude": 50,
-      "_direction": 45
-    },
-    "los": 600,
-    "fov": 120
+    "num": 1,
+    "path_planner": "straight_line",
+    "generic_data": {
+      "los": 600,
+      "fov": 120,
+      "location": { "x": 1500, "y": 1500 },
+      "speed":{ "_magnitude": 50, "_direction": 45 },
+      "physical_specs": {
+        "cruise_speed": 50,
+        "max_speed": 100,
+        "max_speed_time": 20
+      }
+    }
   },
 
   "sneaker": {
-    "physical_specs": {
-      "cruise_speed": 50,
-      "max_speed": 50,
-      "max_speed_time": 0
+    "num": 1,
+    "path_planner": "straight_line",
+    "generic_data": {
+      "los": 100,
+      "fov": 360,
+      "physical_specs": {
+        "cruise_speed": 50,
+        "max_speed": 50,
+        "max_speed_time": 0
+      }
     },
-    "location": {
-      "x": 4500,
-      "y": 4500
-    },
-    "los": 100,
-    "fov": 360
+    "deployment": {
+      "min_dist_between_eachother": 100,
+      "DKIZ": {
+        "shape":{
+          "name": "circle",
+          "circle": {"radius":  2000}
+        },
+        "location": { "x": 4500, "y": 4500 },
+        "appearance": { "linewidth": 1, "edgecolor": "red", "facecolor": "none" }
+      }
+    }
   }
 }
 

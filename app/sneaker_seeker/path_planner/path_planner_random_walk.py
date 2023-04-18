@@ -1,11 +1,11 @@
 from .path_planner import PathPlanner
-from sneaker_seeker.game_obj import Roi, Player
+from sneaker_seeker.game_obj import ROI, Player
 
 import numpy as np
 
 
 class PathPlannerRandomWalk(PathPlanner):
-    def __init__(self, roi: Roi, **_ignore) -> None:
+    def __init__(self, roi: ROI, **_ignore) -> None:
         self.roi = roi
 
     def set_path(self, player: Player):

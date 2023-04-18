@@ -1,13 +1,13 @@
 import random
 
 from .path_planner import PathPlanner
-from sneaker_seeker.game_obj import Roi, Player
+from sneaker_seeker.game_obj import ROI, Player
 from sneaker_seeker.common_types import SpeedVec
 from sneaker_seeker import utils
 
 
 class PathPlannerStraightLine(PathPlanner):
-    def __init__(self, roi: Roi, **_ignore) -> None:
+    def __init__(self, roi: ROI, **_ignore) -> None:
         self.roi = roi
         self.tracked_players = {}
 

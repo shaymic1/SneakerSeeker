@@ -12,9 +12,9 @@ class Sneaker(Player):
         DETECTED = auto()
         DESTROYED = auto()
 
-    def __init__(self, location: dict, physical_specs: dict, observation_direction: float = None,
+    def __init__(self, physical_specs: dict, location: dict = None, observation_direction: float = None,
                  los: float = 100, fov: float = 180, speed: SpeedVec = None) -> None:
-        super().__init__(location, physical_specs, observation_direction, los, fov, speed)
+        super().__init__(physical_specs, location, observation_direction, los, fov, speed)
         self.state = Sneaker.State.UNDETECTED
 
     def detect(self):

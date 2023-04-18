@@ -5,9 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from sneaker_seeker.visualization.visualizer import Visualizer
-from sneaker_seeker.game_obj.roi import Roi
-from sneaker_seeker.game_obj.sneaker import Sneaker
-from sneaker_seeker.game_obj.seeker import Seeker
+from sneaker_seeker.game_obj import Seeker, Sneaker, ROI, DKIZ
 
 
 class Canvas(Visualizer):

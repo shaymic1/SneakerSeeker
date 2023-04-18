@@ -7,3 +7,5 @@ app/TODO
 app/output/
 *.avi
 *.bkp
+app/sandbox.py
+app/TODO.txt
