@@ -1,3 +1,5 @@
+from sneaker_seeker.common_types.point2d import Point2D
+import matplotlib
 from matplotlib.patches import Circle
 from .movable import Movable
 
@@ -9,6 +11,12 @@ class DKIZ(Movable):
 
     def __init__(self, shape: dict, location: dict = None, speed: dict = None, **args: dict) -> None:
         super().__init__(location, speed)
-        self.name = shape["name"]
-        self.shape = DKIZ.__shapes[self.name](**args["appearance"], **shape[self.name],
-                                              xy=(location["x"], location["y"]))
+        self.type: str = shape["type"]
+        self.dimensions: dict = shape[self.type]
+        self.max_dist_from_center = max(self.dimensions.values())
+        self.shape: matplotlib.patches = DKIZ.__shapes[self.type](**args["appearance"], **shape[self.type],
+                                                                  xy=(location["x"], location["y"]))
+
+    def contains(self, other_location: Point2D):
+        if self.type == 'circle':
+            return self.location.dist(other_location) < self.dimensions['radius']
