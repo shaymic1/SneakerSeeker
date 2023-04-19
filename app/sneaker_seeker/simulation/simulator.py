@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from sneaker_seeker import utils
+from sneaker_seeker.common_types.point2d import Point2D
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.game_ROI import ROI
