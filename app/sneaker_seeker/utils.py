@@ -35,6 +35,25 @@ def my_timer(orig_fun):
     return wrapper
 
 
+def my_profiler(orig_fun):
+    import cProfile
+    import pstats
+    @wraps(orig_fun)
+    def wrapper(*args, **kwargs):
+        with cProfile.Profile() as profile:
+            result = orig_fun(*args, **kwargs)
+        res = pstats.Stats(profile)
+        res.sort_stats(pstats.SortKey.TIME)
+        res.print_stats()
+        res.dump_stats("results.prof")
+        print('profiling dump into "results.prof" file.\n'
+              'you can use the cmd: "pip install tune" \n'
+              'followed by: "tuna results.prof" in the cwd for html view.')
+        return result
+
+    return wrapper
+
+
 def read_json(fname: str = 'config.json') -> dict:
     try:
         with open(fname) as json_file:
@@ -47,9 +66,13 @@ def append_time_to_path(out_path: Path, time: int) -> Path:
     return Path(f"{str(Path(out_path / 'fig'))}_{str(time).zfill(9)}")
 
 
-@my_timer
+# @my_timer
 def make_video(frames_dir: Path, video_name: str, fps: float) -> None:
-    frames = [cv2.imread(f) for f in glob.glob(os.path.join(frames_dir, '*.png'))]
+    png_files_path = os.path.join(frames_dir, '*.png')
+    frames = [cv2.imread(f) for f in glob.glob(png_files_path)]
+    if not frames:
+        print(f'no *.png file found in "{png_files_path}"')
+        return
     frame_size = (frames[0].shape[1], frames[0].shape[0])
     out = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*'DIVX'), fps=fps, frameSize=frame_size)
     for frame in frames:

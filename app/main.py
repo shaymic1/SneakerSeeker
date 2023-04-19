@@ -13,6 +13,7 @@ SAVE_FRAME_EVERY_N_STEP = 5
 VID_SPEEDUP_FACTOR = 1
 
 @utils.my_timer
+# @utils.my_profiler
 def main() -> None:
     config = utils.read_json("config.json")
     scenario = utils.read_json(f"scenarios/{SCENARIO_NAME}.json")
