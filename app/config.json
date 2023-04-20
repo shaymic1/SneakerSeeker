@@ -1,5 +1,6 @@
 {
-  "outputdir": "output"
+  "outputdir": "output",
+  "frame_format": "jpg"
 }
 
 

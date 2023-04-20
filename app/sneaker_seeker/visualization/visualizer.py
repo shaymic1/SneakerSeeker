@@ -3,8 +3,8 @@ from pathlib import Path
 
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
-from sneaker_seeker.game_obj.game_ROI import ROI
-from sneaker_seeker.game_obj.sneaker_DKIZ import DKIZ
+from sneaker_seeker.game_obj.ROI import ROI
+from sneaker_seeker.game_obj.DKIZ import DKIZ
 
 
 class Visualizer(ABC):

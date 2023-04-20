@@ -45,8 +45,8 @@ def my_profiler(orig_fun):
         res = pstats.Stats(profile)
         res.sort_stats(pstats.SortKey.TIME)
         res.print_stats()
-        res.dump_stats("results.prof")
-        print('profiling dump into "results.prof" file.\n'
+        res.dump_stats(f"{orig_fun.__name__}_profiling.prof")
+        print(f'profiling dump into "{orig_fun.__name__}_profiling.prof" file.\n'
               'you can use the cmd: "pip install tune" \n'
               'followed by: "tuna results.prof" in the cwd for html view.')
         return result
@@ -67,8 +67,8 @@ def append_time_to_path(out_path: Path, time: int) -> Path:
 
 
 # @my_timer
-def make_video(frames_dir: Path, video_name: str, fps: float) -> None:
-    png_files_path = os.path.join(frames_dir, '*.png')
+def make_video(frames_dir: Path, frames_format: str, video_name: str, fps: float) -> None:
+    png_files_path = os.path.join(frames_dir, f'*.{frames_format}')
     frames = [cv2.imread(f) for f in glob.glob(png_files_path)]
     if not frames:
         print(f'no *.png file found in "{png_files_path}"')

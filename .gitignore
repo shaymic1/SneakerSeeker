@@ -9,3 +9,4 @@ app/output/
 *.bkp
 app/sandbox.py
 app/TODO.txt
+app/results.prof

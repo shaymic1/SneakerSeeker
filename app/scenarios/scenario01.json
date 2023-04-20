@@ -1,32 +1,20 @@
 {
-  "time_goal_ms": 120000,
-  "time_step_ms": 500,
+  "time_goal_ms": 150000,
+  "time_step_ms": 250,
 
-  "canvas": {
-    "fig_size": {"width": 16, "height": 9},
-    "width": 13000,
-    "height": 6000,
-    "margin": 1000,
-    "name": "SneakerSeeker",
-    "x_label": "x [m]",
-    "y_label": "y [m]"
-  },
+  "world": {"width": 14000, "height": 8000, "margin": 0},
 
   "ROI": {
-    "x": 0,
-    "y": 0,
+    "x": 1000,
+    "y": 1000,
     "height": 5000,
-    "width": 5000,
-    "linewidth": 1,
-    "edgecolor": "green",
-    "facecolor": "none"
+    "width": 5000
   },
-
 
   "seeker": {
     "num": 1,
     "path_planner": "straight_line",
-    "generic_data": {
+    "common_data": {
       "los": 600,
       "fov": 120,
       "location": { "x": 1500, "y": 1500 },
@@ -34,35 +22,65 @@
       "physical_specs": {
         "cruise_speed": 50,
         "max_speed": 100,
-        "max_speed_time": 20
+        "max_speed_time": 20,
+        "min_dist_between_eachother": 100
       }
     }
   },
 
   "sneaker": {
-    "num": 1,
+    "num": 10,
     "path_planner": "straight_line",
-    "generic_data": {
+    "speed":{ "_magnitude": 50, "_direction": 180 },
+    "common_data": {
       "los": 100,
       "fov": 360,
       "physical_specs": {
         "cruise_speed": 50,
         "max_speed": 50,
-        "max_speed_time": 0
+        "max_speed_time": 0,
+        "min_dist_between_eachother": 100
       }
     },
     "deployment": {
-      "min_dist_between_eachother": 100,
       "DKIZ": {
         "shape":{
-          "name": "circle",
+          "type": "circle",
           "circle": {"radius":  2000}
         },
-        "location": { "x": 4500, "y": 4500 },
-        "appearance": { "linewidth": 1, "edgecolor": "red", "facecolor": "none" }
+        "location": { "x": 11500, "y": 5500 }
       }
     }
+  },
+
+  "canvas": {
+    "fig_size": {"width": 16, "height": 9},
+    "name": "SneakerSeeker",
+    "x_label": "x [m]",
+    "y_label": "y [m]",
+    "object_appearance": {
+      "DKIZ": { "linewidth": 1, "edgecolor": "red", "facecolor": "none" },
+      "sneaker": {
+        "undetected": {
+          "wedge": {"facecolor": "red", "alpha": 0.1},
+          "triangle": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6},
+          "line": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6}
+        },
+        "detected": {
+          "wedge": {"facecolor": "green", "alpha": 0.7},
+          "triangle": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6},
+          "line": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6}
+        }
+      },
+      "seeker": {
+        "wedge": {"facecolor": "blue", "alpha": 0.1},
+        "triangle": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.6},
+        "line": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.6}
+      },
+      "ROI": { "linewidth": 2, "edgecolor": "green", "facecolor": "none" }
+    }
   }
+
 }
 
 
