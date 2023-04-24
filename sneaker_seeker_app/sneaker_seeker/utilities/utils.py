@@ -1,3 +1,4 @@
+import argparse
 import glob
 import math
 from functools import wraps
@@ -66,27 +67,62 @@ def append_time_to_path(out_path: Path, time: int) -> Path:
     return Path(f"{str(Path(out_path / 'fig'))}_{str(time).zfill(9)}")
 
 
+def parse_args_to_dict(debug_input=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--scenario", required=True, type=Path, nargs='+',
+                        help="provide the list of paths to *.json scenario files")
+    parser.add_argument("-o", "--out_path", required=False, default=Path(os.getcwd()), type=Path,
+                        help="output path")
+    parser.add_argument("-p", "--play_video", required=False, default=False, action='store_true',
+                        help="boolean flag for playing the video after run.")
+    parser.add_argument("-k", "--keep_frames", required=False, default=False, action='store_true',
+                        help="boolean flag for keeping the frames of every step.")
+    parser.add_argument("--frames_format", required=False, default="jpg", choices=['jpg', 'png'], type=str,
+                        help="set the frames format. jpg or png")
+    parser.add_argument("--speed_up_video", required=False, default=1, type=int,
+                        help="speed up the video by that factor")
+    parser.add_argument("--scale_world_factor", required=False, default=1, type=float,
+                        help="scale the scenario world by that factor")
+    parser.add_argument("--save_frame_every_n_step", required=False, default=10, type=int,
+                        help="dilute the number of frames in the video to speed up the run time of the application.")
+    return parser.parse_args(debug_input).__dict__
+
+
 # @my_timer
-def make_video(frames_dir: Path, frames_format: str, video_name: str, fps: float) -> None:
+def make_video(frames_dir: Path, frames_format: str, video_name: str, fps: float, keep_frames: bool = False) -> Path:
     png_files_path = os.path.join(frames_dir, f'*.{frames_format}')
     frames = [cv2.imread(f) for f in glob.glob(png_files_path)]
     if not frames:
         print(f'no *.png file found in "{png_files_path}"')
         return
+    if not keep_frames:
+        for f in glob.glob(os.path.join(frames_dir, '*.*')):
+            os.remove(f)
     frame_size = (frames[0].shape[1], frames[0].shape[0])
-    out = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*'DIVX'), fps=fps, frameSize=frame_size)
+    vid_path = frames_dir / video_name
+    out = cv2.VideoWriter(str(vid_path), cv2.VideoWriter_fourcc(*'DIVX'), fps=fps, frameSize=frame_size)
     for frame in frames:
         out.write(frame)
     out.release()
+    return vid_path
 
 
-def make_output_path(outputdir: str, scenario_name: str, empty_output_path: bool = True) -> Path:
-    out = Path(os.getcwd()) / outputdir / scenario_name
+def make_output_path(outputdir: str, scenario_name: str, empty_output_path: bool = False) -> Path:
+    out = outputdir / scenario_name
     out.mkdir(parents=True, exist_ok=True)
     if empty_output_path:
         for f in glob.glob(os.path.join(out, '*.*')):
             os.remove(f)
     return out
+
+
+def scale_world(scenario: dict, scale_factor):
+    for name in ["world", "ROI"]:
+        for k in scenario[name].keys():
+            scenario[name][k] *= scale_factor
+    for name, sub_name in [["canvas", "fig_size"]]:
+        for k in scenario[name][sub_name].keys():
+            scenario[name][sub_name][k] *= scale_factor
 
 
 def real_time_fps(time_step_ms, save_frame_every_n_step) -> float:

@@ -9,3 +9,4 @@ output/
 sandbox.py
 TODO.txt
 .pytest_cache/
+sneaker_seeker.egg-info/

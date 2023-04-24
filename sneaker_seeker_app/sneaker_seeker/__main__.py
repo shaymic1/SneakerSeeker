@@ -1,4 +1,5 @@
 import subprocess
+from pathlib import Path
 
 from sneaker_seeker.utilities import utils
 from sneaker_seeker.path_planner.path_planner_factory import PathPlannerFactory
@@ -9,35 +10,12 @@ from sneaker_seeker.game_obj.ROI import ROI
 from sneaker_seeker.visualization.canvas import Canvas
 from sneaker_seeker.simulation.simulator import Simulator
 
-SCENARIO_NAME = "scenario01"
-SAVE_FRAME_EVERY_N_STEP = 10
-VID_SPEEDUP_FACTOR = 1
-SCALE_WORLD_FACTOR = 1
 
-
-def scale_world(scenario: dict, scale_factor):
-    for name in ["world", "ROI"]:
-        for k in scenario[name].keys():
-            scenario[name][k] *= scale_factor
-    for name, sub_name in [["canvas", "fig_size"]]:
-        for k in scenario[name][sub_name].keys():
-            scenario[name][sub_name][k] *= scale_factor
-
-
-@utils.my_timer
-# @utils.my_profiler
-def main() -> None:
-    config = utils.read_json("../config.json")
-    scenario = utils.read_json(f"../scenarios/{SCENARIO_NAME}.json")
-    out_path = utils.make_output_path(outputdir=config["outputdir"], scenario_name=SCENARIO_NAME,
-                                      empty_output_path=True)
-
-    scale_world(scenario, SCALE_WORLD_FACTOR)
-
+def run_scenario(scenario: dict, args: dict, out_path: Path) -> None:
     game_objects = {
         "roi": ROI(**scenario["ROI"]),  # Region Of Interest of the game of seeking
         "dkiz": DKIZ(**scenario["sneaker"]["deployment"]["DKIZ"]),  # this the Dynamic Keep-In Zone for the Sneakers.
-        "visualizer": Canvas(frame_format=config["frame_format"], **scenario["world"], **scenario["canvas"]),
+        "visualizer": Canvas(frame_format=args["frames_format"], **scenario["world"], **scenario["canvas"]),
         "sneakers": [Sneaker(**scenario["sneaker"]["common_data"]) for _ in range(scenario["sneaker"]["num"])],
         "seekers": [Seeker(**scenario["seeker"]["common_data"]) for _ in range(scenario["seeker"]["num"])]
     }
@@ -46,13 +24,37 @@ def main() -> None:
                      Sneaker: PathPlannerFactory.create(scenario["sneaker"]["path_planner"], **game_objects)}
 
     simulator = Simulator(out_path=out_path, scenario=scenario, path_planners=path_planners, **game_objects)
-    simulator.run(save_frame_every_n_step=SAVE_FRAME_EVERY_N_STEP)
+    simulator.run(save_frame_every_n_step=args["save_frame_every_n_step"])
 
-    utils.make_video(frames_dir=out_path, frames_format=config["frame_format"], video_name=f"{SCENARIO_NAME}.avi",
-                     fps=(VID_SPEEDUP_FACTOR * utils.real_time_fps(scenario['time_step_ms'], SAVE_FRAME_EVERY_N_STEP)))
+    vid_path = utils.make_video(
+        frames_dir=out_path, frames_format=args["frames_format"],
+        video_name=f"{scenario['name']}.avi",
+        fps=(args["speed_up_video"] * utils.real_time_fps(scenario['time_step_ms'], args["save_frame_every_n_step"])),
+        keep_frames=args["keep_frames"])
+
+    if args["play_video"]:
+        subprocess.run(['start', str(vid_path)], shell=True)
+
+
+@utils.my_timer
+# @utils.my_profiler
+def main(debug_input=None) -> None:
+    args = utils.parse_args_to_dict(debug_input)
+    for scenario_path in args["scenario"]:
+        scenario = utils.read_json(str(scenario_path))
+        out_path = utils.make_output_path(outputdir=args["out_path"], scenario_name=scenario["name"])
+        utils.scale_world(scenario, args["scale_world_factor"])
+        run_scenario(scenario, args, out_path)
 
 
 if __name__ == "__main__":
-    main()
-    video_file = f"./{SCENARIO_NAME}.avi"
-    subprocess.run(['start', video_file], shell=True)
+    debug = [
+        "--scenario", r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\scenario01.json",
+        "--out_path", r"C:\Users\shali\Desktop",
+        "--scale_world_factor", "1",
+        "--speed_up_video", "10",
+        "--save_frame_every_n_step", "10",
+        "--play_video",
+        # "--keep_frames"
+    ]
+    main(debug)

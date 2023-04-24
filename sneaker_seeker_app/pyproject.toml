@@ -3,5 +3,11 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sneaker-seeker"
-version = "1.0.0"
+name = "SneakerSeeker"
+version = "1.0.0.0"
+
+[tool.setuptools]
+py-modules = ["sneaker_seeker"]
+
+[project.scripts]
+ssgame = "sneaker_seeker.__main__:main"

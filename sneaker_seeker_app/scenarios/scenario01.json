@@ -1,4 +1,5 @@
 {
+  "name": "scenario01",
   "time_goal_ms": 150000,
   "time_step_ms": 500,
 
