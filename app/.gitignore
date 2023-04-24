@@ -1,0 +1,10 @@
+*.wbk
+*.pyc
+*.avi
+*.bkp
+*.prof
+
+.idea/
+output/
+sandbox.py
+TODO.txt

@@ -1,12 +1,11 @@
 *.wbk
-
-indoor_HnS/
 *.pyc
-app/.idea/
-app/TODO
-app/output/
 *.avi
 *.bkp
+*.prof
+
+indoor_HnS/
+app/.idea/
+app/output/
 app/sandbox.py
 app/TODO.txt
-app/results.prof
