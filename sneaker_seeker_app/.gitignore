@@ -8,3 +8,4 @@
 output/
 sandbox.py
 TODO.txt
+.pytest_cache/

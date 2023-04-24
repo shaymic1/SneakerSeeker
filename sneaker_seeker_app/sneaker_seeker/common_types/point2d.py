@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from scipy.spatial.distance import euclidean
 
-from sneaker_seeker import utils
+from sneaker_seeker.utilities import utils
 
 
 @dataclass

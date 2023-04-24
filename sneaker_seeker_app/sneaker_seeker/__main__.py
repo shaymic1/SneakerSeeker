@@ -1,6 +1,6 @@
 import subprocess
 
-from sneaker_seeker import utils
+from sneaker_seeker.utilities import utils
 from sneaker_seeker.path_planner.path_planner_factory import PathPlannerFactory
 from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.sneaker import Sneaker
@@ -11,7 +11,7 @@ from sneaker_seeker.simulation.simulator import Simulator
 
 SCENARIO_NAME = "scenario01"
 SAVE_FRAME_EVERY_N_STEP = 10
-VID_SPEEDUP_FACTOR = 10
+VID_SPEEDUP_FACTOR = 1
 SCALE_WORLD_FACTOR = 1
 
 
@@ -27,8 +27,8 @@ def scale_world(scenario: dict, scale_factor):
 @utils.my_timer
 # @utils.my_profiler
 def main() -> None:
-    config = utils.read_json("config.json")
-    scenario = utils.read_json(f"scenarios/{SCENARIO_NAME}.json")
+    config = utils.read_json("../config.json")
+    scenario = utils.read_json(f"../scenarios/{SCENARIO_NAME}.json")
     out_path = utils.make_output_path(outputdir=config["outputdir"], scenario_name=SCENARIO_NAME,
                                       empty_output_path=True)
 
