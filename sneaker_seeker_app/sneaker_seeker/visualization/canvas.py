@@ -22,7 +22,9 @@ def circle_dkiz_creator(ax: plt.Axes, dkiz: DKIZ, appearance: dict) -> matplotli
 
 
 PlayerCanvasObj = Tuple[matplotlib.patches.Wedge, plt.Line2D, plt.Line2D]
-
+DKIZCanvasObj = Union[matplotlib.patches.Circle, any]
+ROICanvasObj = matplotlib.patches.Rectangle
+CanvasObj = Union[PlayerCanvasObj, DKIZCanvasObj, ROICanvasObj]
 
 class Canvas(Visualizer):
     __dkiz_shape_creator: dict[str, callable] = {"circle": circle_dkiz_creator}
@@ -39,7 +41,7 @@ class Canvas(Visualizer):
         self.x_label = x_label
         self.y_label = y_label
         self.object_appearance: dict = object_appearance
-        self.objects: dict[int, any] = {}
+        self.objects: dict[int, CanvasObj] = {}
         self.__init()
 
     @staticmethod
@@ -100,12 +102,12 @@ class Canvas(Visualizer):
         self.__print_player_to_canvas(seeker_canvas_obj, seeker, appearance)
 
     def make_sneaker(self, sneaker: Sneaker):
-        sneaker_canvas_obj: PlayerCanvasObj = self.objects.get(sneaker.id)
+        sneaker_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(sneaker.id)
         appearance = self.object_appearance["sneaker"][sneaker.state.name.lower()]
         self.__print_player_to_canvas(sneaker_canvas_obj, sneaker, appearance)
 
     def make_ROI(self, roi: ROI):
-        self.ax.add_patch(matplotlib.patches.Rectangle(xy=(roi.x, roi.y),
+        self.ax.add_patch(matplotlib.patches.Rectangle(xy=(roi.location.x, roi.location.y),
                                                        width=roi.width,
                                                        height=roi.height,
                                                        **self.object_appearance["ROI"]))
@@ -113,8 +115,8 @@ class Canvas(Visualizer):
     def make_DKIZ(self, dkiz: DKIZ):
         dkiz_patch: Union[matplotlib.patches.Circle, any] = self.objects.get(dkiz.id)
         if dkiz_patch is None:  # create new object
-            self.objects[dkiz.id] = Canvas.__dkiz_shape_creator[dkiz.type](
-                ax=self.ax, dkiz=dkiz, appearance=self.object_appearance["DKIZ"])
+            self.objects[dkiz.id] = Canvas.__dkiz_shape_creator[dkiz.type](ax=self.ax, dkiz=dkiz,
+                                                                           appearance=self.object_appearance["DKIZ"])
         else:  # update existing object
             Canvas.__dkiz_shape_updater[dkiz.type](dkiz_patch, dkiz)
 

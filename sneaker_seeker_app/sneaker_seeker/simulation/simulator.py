@@ -1,11 +1,11 @@
 import math
 from pathlib import Path
-
+from typing import Optional
 import numpy as np
 
 from sneaker_seeker.utilities import utils
 from sneaker_seeker.common_types.point2d import Point2D
-from sneaker_seeker.common_types.speed_vec import SpeedVec
+from sneaker_seeker.common_types.vec2d import Vec2D
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.ROI import ROI
@@ -70,30 +70,35 @@ class Simulator:
                     sneaker.detect()
         return any([s.is_detected() for s in still_unknown_sneakers])
 
+    def __calc_pip(self, target: DKIZ, friendly: Seeker) -> Optional[Point2D]:
+        dist2d: Point2D = target.location - friendly.location
+        relative_speed_vec: Vec2D = target.speed
+        dt_until_pip = self.__aim_ahead(dist2d, relative_speed_vec, friendly.speed.magnitude)
+        return target.location + Point2D(*(target.speed * dt_until_pip).to_cartesian()) if dt_until_pip > 0 else None
+
+    def __aim_ahead(self, dist: Point2D, relative_speed_vec: Vec2D, friendly_speed_magnitude: float):
+        # Quadratic equation coefficients a*t^2 + b*t + c = 0
+        a = relative_speed_vec.magnitude ** 2 - friendly_speed_magnitude ** 2
+        b = 2 * (relative_speed_vec.vx * dist.x + relative_speed_vec.vy * dist.y)
+        c = (dist.x ** 2 + dist.y ** 2)
+
+        desc = b ** 2 - 4 * a * c
+
+        # If the discriminant is negative, then there is no solution
+        if desc < 0:
+            return -1
+
+        return (2 * c) / (math.sqrt(desc) - b)
+
     def __set_initial_deployment(self):
         min_dist = self.sneakers[0].physical_specs.min_dist_between_eachother
-        points = self.points_inside_DKIZ(len(self.sneakers), self.dkiz, min_dist)
-        self.dkiz.speed = SpeedVec(**self.scenario["sneaker"]["speed"])
+        points = self.dkiz.generate_points_inside(num_of_points=len(self.sneakers), min_dist_between=min_dist)
+        self.dkiz.speed = Vec2D(**self.scenario["sneaker"]["speed"])
         for sneaker, point in zip(self.sneakers, points):
             sneaker.location = point
-            sneaker.speed = SpeedVec(**self.scenario["sneaker"]["speed"])
+            sneaker.speed = Vec2D(**self.scenario["sneaker"]["speed"])
 
-    def points_inside_DKIZ(self, num_of_points: int, dkiz: DKIZ, min_dist: float) -> list[Point2D]:
-        chosen_points = []
-        for _ in range(num_of_points):
-            p = Point2D()
-            while True:
-                theta = np.random.uniform(0, 2 * np.pi)
-                rho = np.random.uniform(0, self.dkiz.max_dist_from_center)
-                dx_from_center_dkiz = rho * math.cos(theta)
-                dy_from_center_dkiz = rho * math.sin(theta)
-                p = Point2D(dx_from_center_dkiz, dy_from_center_dkiz) + self.dkiz.location
-                if self.dkiz.contains(p) and not self.is_close_to_any_point(p, chosen_points, min_dist):
-                    chosen_points.append(p)
-                    break
-        return chosen_points
-
-    def is_close_to_any_point(self, p, chosen_points, min_dist):
-        if len(chosen_points) == 0:
-            return False
-        return any([p.dist(chosen_p) < min_dist for chosen_p in chosen_points])
+        for seeker in self.seekers:
+            pip = self.__calc_pip(self.dkiz, seeker)
+            seeker.steer(pip if pip else Point2D(x=0, y=0))
+            seeker.observation_direction = seeker.speed.direction

@@ -6,8 +6,7 @@
   "world": {"width": 14000, "height": 8000, "margin": 0},
 
   "ROI": {
-    "x": 1000,
-    "y": 1000,
+    "location": { "x": 1000, "y": 1000 },
     "height": 5000,
     "width": 5000
   },
@@ -18,7 +17,7 @@
     "common_data": {
       "los": 600,
       "fov": 120,
-      "location": { "x": 1500, "y": 1500 },
+      "location": { "x": 1000, "y": 1000 },
       "speed":{ "_magnitude": 50, "_direction": 45 },
       "physical_specs": {
         "cruise_speed": 50,
@@ -32,7 +31,7 @@
   "sneaker": {
     "num": 10,
     "path_planner": "straight_line",
-    "speed":{ "_magnitude": 50, "_direction": 180 },
+    "speed":{ "_magnitude": 50, "_direction": 170 },
     "common_data": {
       "los": 100,
       "fov": 360,
@@ -49,7 +48,7 @@
           "type": "circle",
           "circle": {"radius":  2000}
         },
-        "location": { "x": 11500, "y": 5500 }
+        "location": { "x": 12500, "y": 1500 }
       }
     }
   },
@@ -60,7 +59,7 @@
     "x_label": "x [m]",
     "y_label": "y [m]",
     "object_appearance": {
-      "DKIZ": { "linewidth": 1, "edgecolor": "red", "facecolor": "none" },
+      "DKIZ": { "linewidth": 0.5, "edgecolor": "red", "facecolor": "none", "alpha": 0.5 },
       "sneaker": {
         "undetected": {
           "wedge": {"facecolor": "red", "alpha": 0.1},

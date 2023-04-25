@@ -117,12 +117,14 @@ def make_output_path(outputdir: str, scenario_name: str, empty_output_path: bool
 
 
 def scale_world(scenario: dict, scale_factor):
-    for name in ["world", "ROI"]:
+    for name in ["world"]:
         for k in scenario[name].keys():
             scenario[name][k] *= scale_factor
     for name, sub_name in [["canvas", "fig_size"]]:
         for k in scenario[name][sub_name].keys():
             scenario[name][sub_name][k] *= scale_factor
+    scenario['ROI']['height'] *= scale_factor
+    scenario['ROI']['width'] *= scale_factor
 
 
 def real_time_fps(time_step_ms, save_frame_every_n_step) -> float:

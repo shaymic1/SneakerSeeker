@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 from sneaker_seeker.game_obj.player import Player
-from sneaker_seeker.common_types.speed_vec import SpeedVec
+from sneaker_seeker.common_types.vec2d import Vec2D
 
 
 class Sneaker(Player):
@@ -11,7 +11,7 @@ class Sneaker(Player):
         DESTROYED = auto()
 
     def __init__(self, physical_specs: dict, location: dict = None, observation_direction: float = None,
-                 los: float = 100, fov: float = 180, speed: SpeedVec = None) -> None:
+                 los: float = 100, fov: float = 180, speed: Vec2D = None) -> None:
         super().__init__(physical_specs, location, observation_direction, los, fov, speed)
         self.state = Sneaker.State.UNDETECTED
 
