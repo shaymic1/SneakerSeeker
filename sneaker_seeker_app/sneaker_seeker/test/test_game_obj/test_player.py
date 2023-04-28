@@ -1,6 +1,5 @@
 import pytest
 from sneaker_seeker.common_types.physical_specs import PhysicalSpecs
-from sneaker_seeker.common_types.point2d import Point2D
 from sneaker_seeker.common_types.vec2d import Vec2D
 from sneaker_seeker.game_obj.player import Player
 
@@ -13,17 +12,17 @@ def player():
         observation_direction=0,
         los=1000,
         fov=60,
-        speed={"_magnitude": 10, "_direction": 0}
+        speed={"magnitude": 10, "angle": 0}
     )
 
 
 def test_player_creation(player):
     assert player.id > 0
     assert isinstance(player.physical_specs, PhysicalSpecs)
-    assert isinstance(player.location, Point2D)
+    assert isinstance(player.location, Vec2D)
     assert isinstance(player.speed, Vec2D)
     assert player.speed.magnitude == 10
-    assert player.speed.direction == 0
+    assert player.speed.angle == 0
 
 
 def test_player_move(player):

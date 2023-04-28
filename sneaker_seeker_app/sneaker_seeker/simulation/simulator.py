@@ -4,7 +4,6 @@ from typing import Optional
 import numpy as np
 
 from sneaker_seeker.utilities import utils
-from sneaker_seeker.common_types.point2d import Point2D
 from sneaker_seeker.common_types.vec2d import Vec2D
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
@@ -62,7 +61,7 @@ class Simulator:
             self.__step(curr_time, should_record_step=curr_time % (time_step * save_frame_every_n_step) == 0)
             curr_time += time_step
 
-    def __check_for_detections(self):
+    def __check_for_detections(self) -> bool:
         still_unknown_sneakers = [s for s in self.sneakers if s.is_undetected()]
         for sneaker in still_unknown_sneakers:
             for seeker in self.seekers:
@@ -70,35 +69,32 @@ class Simulator:
                     sneaker.detect()
         return any([s.is_detected() for s in still_unknown_sneakers])
 
-    def __calc_pip(self, target: DKIZ, friendly: Seeker) -> Optional[Point2D]:
-        dist2d: Point2D = target.location - friendly.location
+    def __calc_pip(self, target: DKIZ, friendly: Seeker) -> Optional[Vec2D]:
+        "calculate the point of future impact."
+        dist2d: Vec2D = target.location - friendly.location
         relative_speed_vec: Vec2D = target.speed
         dt_until_pip = self.__aim_ahead(dist2d, relative_speed_vec, friendly.speed.magnitude)
-        return target.location + Point2D(*(target.speed * dt_until_pip).to_cartesian()) if dt_until_pip > 0 else None
+        return target.location + target.speed * dt_until_pip if dt_until_pip > 0 else None
 
-    def __aim_ahead(self, dist: Point2D, relative_speed_vec: Vec2D, friendly_speed_magnitude: float):
+    def __aim_ahead(self, dist: Vec2D, relative_speed_vec: Vec2D, friendly_speed_magnitude: float) -> Optional[float]:
+        "calculate the time till possible impact."
         # Quadratic equation coefficients a*t^2 + b*t + c = 0
         a = relative_speed_vec.magnitude ** 2 - friendly_speed_magnitude ** 2
-        b = 2 * (relative_speed_vec.vx * dist.x + relative_speed_vec.vy * dist.y)
+        b = 2 * (relative_speed_vec.x * dist.x + relative_speed_vec.y * dist.y)
         c = (dist.x ** 2 + dist.y ** 2)
-
         desc = b ** 2 - 4 * a * c
-
-        # If the discriminant is negative, then there is no solution
-        if desc < 0:
-            return -1
-
+        if desc < 0:  # If the discriminant is negative, then there is no solution
+            return None
         return (2 * c) / (math.sqrt(desc) - b)
 
     def __set_initial_deployment(self):
         min_dist = self.sneakers[0].physical_specs.min_dist_between_eachother
         points = self.dkiz.generate_points_inside(num_of_points=len(self.sneakers), min_dist_between=min_dist)
-        self.dkiz.speed = Vec2D(**self.scenario["sneaker"]["speed"])
         for sneaker, point in zip(self.sneakers, points):
             sneaker.location = point
-            sneaker.speed = Vec2D(**self.scenario["sneaker"]["speed"])
+            sneaker.speed = Vec2D.from_polar(**self.scenario["sneaker"]["deployment"]["DKIZ"]["speed"])
 
         for seeker in self.seekers:
             pip = self.__calc_pip(self.dkiz, seeker)
-            seeker.steer(pip if pip else Point2D(x=0, y=0))
-            seeker.observation_direction = seeker.speed.direction
+            seeker.steer(pip if pip else Vec2D(x=0, y=0))
+            seeker.observation_direction = seeker.speed.angle

@@ -2,7 +2,7 @@ import math
 
 import numpy as np
 
-from sneaker_seeker.common_types.point2d import Point2D
+from sneaker_seeker.common_types.vec2d import Vec2D
 import matplotlib
 from matplotlib.patches import Circle
 from .movable import Movable
@@ -17,27 +17,27 @@ class DKIZ(Movable):
         self.dimensions: dict = shape[self.type]
         self.max_dist_from_center = max(self.dimensions.values())
 
-    def contains(self, other_location: Point2D):
+    def contains(self, other_location: Vec2D):
         if self.type == 'circle':
-            return self.location.dist(other_location) < self.dimensions['radius']
+            return self.location.distance_to(other_location) < self.dimensions['radius']
 
-    def generate_points_inside(self, num_of_points: int, min_dist_between: float) -> list[Point2D]:
+    def generate_points_inside(self, num_of_points: int, min_dist_between: float) -> list[Vec2D]:
         chosen_points = []
         for _ in range(num_of_points):
-            p = Point2D()
+            p = Vec2D()
             while True:
                 theta = np.random.uniform(0, 2 * np.pi)
                 rho = np.random.uniform(0, self.max_dist_from_center)
                 dx_from_center = rho * math.cos(theta)
                 dy_from_center = rho * math.sin(theta)
-                p = Point2D(dx_from_center, dy_from_center) + self.location
+                p = Vec2D(dx_from_center, dy_from_center) + self.location
                 if self.contains(p) and not self.is_close_to_any_point(p, chosen_points, min_dist_between):
                     chosen_points.append(p)
                     break
         return chosen_points
 
     @staticmethod
-    def is_close_to_any_point(p, chosen_points, min_dist):
+    def is_close_to_any_point(candidate_point: Vec2D, chosen_points: list[Vec2D], min_dist: float) -> bool:
         if len(chosen_points) == 0:
             return False
-        return any([p.dist(chosen_p) < min_dist for chosen_p in chosen_points])
+        return any([candidate_point.distance_to(chosen_p) < min_dist for chosen_p in chosen_points])

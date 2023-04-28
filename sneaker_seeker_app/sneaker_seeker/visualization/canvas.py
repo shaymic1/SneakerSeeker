@@ -70,10 +70,10 @@ class Canvas(Visualizer):
                                      theta2=(player.observation_direction + player.fov / 2),
                                      **appearance["wedge"]))
         triangle: list[plt.Line2D] = self.ax.plot(player.location.x, player.location.y,
-                                                  marker=(3, 0, player.speed.direction - 90),  # directed triangle
+                                                  marker=(3, 0, player.speed.angle - 90),  # directed triangle
                                                   **appearance["triangle"])
         line: list[plt.Line2D] = self.ax.plot(player.location.x, player.location.y,
-                                              marker=(2, 0, player.speed.direction - 90),  # directed line
+                                              marker=(2, 0, player.speed.angle - 90),  # directed line
                                               **appearance["line"])
         return wedge, triangle[0], line[0]
 

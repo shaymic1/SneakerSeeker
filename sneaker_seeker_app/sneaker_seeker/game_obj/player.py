@@ -8,7 +8,7 @@ class Player(Movable):
                  los: float = 1000, fov: float = 60, speed: dict = None) -> None:
         super().__init__(location, speed)
         self.physical_specs: PhysicalSpecs = PhysicalSpecs(**physical_specs)
-        self.observation_direction: float = observation_direction if observation_direction else self.speed.direction
+        self.observation_direction: float = observation_direction if observation_direction else self.speed.angle
         self.los: float = los
         self.fov: float = fov
 

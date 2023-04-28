@@ -11,4 +11,4 @@ class PathPlannerRandomWalk(PathPlanner):
 
     def set_path(self, player: Player):
         player.speed.magnitude = np.random.uniform(low=0, high=player.physical_specs.cruise_speed)
-        player.speed.direction = np.random.uniform(low=0, high=np.pi*2)
+        player.speed.angle = np.random.uniform(low=0, high=np.pi * 2)

@@ -18,7 +18,7 @@
       "los": 600,
       "fov": 120,
       "location": { "x": 1000, "y": 1000 },
-      "speed":{ "_magnitude": 50, "_direction": 45 },
+      "speed":{ "magnitude": 50, "angle": 45 },
       "physical_specs": {
         "cruise_speed": 50,
         "max_speed": 100,
@@ -31,7 +31,6 @@
   "sneaker": {
     "num": 10,
     "path_planner": "straight_line",
-    "speed":{ "_magnitude": 50, "_direction": 170 },
     "common_data": {
       "los": 100,
       "fov": 360,
@@ -48,7 +47,8 @@
           "type": "circle",
           "circle": {"radius":  2000}
         },
-        "location": { "x": 12500, "y": 1500 }
+        "location": { "x": 9500, "y": 2500 },
+        "speed":{ "magnitude": 50, "angle": 160 }
       }
     }
   },

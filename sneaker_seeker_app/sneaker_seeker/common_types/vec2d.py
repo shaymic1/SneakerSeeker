@@ -1,86 +1,87 @@
 import math
 from typing import Tuple
-from math import sin, cos
-from dataclasses import dataclass
 
 
-@dataclass
 class Vec2D:
-    _magnitude: float = 0
-    _direction: float = 0
-    _vx: float = 0
-    _vy: float = 0
+    """A two-dimensional vector with Cartesian coordinates."""
 
-    def __post_init__(self):
-        self._vx = self._magnitude * cos(math.radians(self.direction))
-        self._vy = self._magnitude * sin(math.radians(self.direction))
+    def __init__(self, x: float = 0, y: float = 0) -> None:
+        self.x, self.y = x, y
 
-    def __eq__(self, other: 'Vec2D') -> bool:
-        return self._magnitude == other._magnitude and self.direction == other.direction
-
-    def __repr__(self):
-        return f"SpeedVec(_magnitude={self._magnitude}, direction={self.direction})"
+    @classmethod
+    def from_polar(cls, magnitude: float, angle: float) -> 'Vec2D':
+        """an other Ctor to enable the creation from magnitude and angle."""
+        return cls(x=magnitude * math.cos(math.radians(angle)),
+                   y=magnitude * math.sin(math.radians(angle)))
 
     @property
     def magnitude(self):
-        return self._magnitude
+        return abs(self)
 
     @magnitude.setter
     def magnitude(self, value):
+        old_mag = abs(self)
         if value < 0:
             raise ValueError("Magnitude cannot be negative")
-        self._vx *= (value / self.magnitude)
-        self._vy *= (value / self.magnitude)
-        self._magnitude = value
+        self.x *= (value / old_mag)
+        self.y *= (value / old_mag)
 
     @property
-    def direction(self):
-        return self._direction
+    def angle(self):
+        return math.degrees(math.atan2(self.y, self.x))
 
-    @direction.setter
-    def direction(self, value):
-        self._direction = value
-        self._vx = self.magnitude * cos(math.radians(value))
-        self._vy = self.magnitude * sin(math.radians(value))
+    @angle.setter
+    def angle(self, value: float) -> None:
+        mag = self.magnitude
+        self.x = mag * math.cos(math.radians(value))
+        self.y = mag * math.sin(math.radians(value))
 
-    @property
-    def vx(self):
-        return self._vx
+    def __str__(self) -> str:
+        return '{:g}i + {:g}j'.format(self.x, self.y)
 
-    @property
-    def vy(self):
-        return self._vy
+    def __repr__(self) -> str:
+        return repr((self.x, self.y))
 
-    def to_cartesian(self) -> Tuple[float, float]:
-        return self._vx, self._vy
+    def dot(self, other: 'Vec2D') -> float:
+        """The scalar (dot) product of self and other. Both must be vectors."""
+        if not isinstance(other, Vec2D):
+            raise TypeError('Can only take dot product of two Vector2D objects')
+        return self.x * other.x + self.y * other.y
+
+    # Alias the __matmul__ method to dot so we can use a @ b as well as a.dot(b).
+    __matmul__ = dot
 
     def __sub__(self, other: 'Vec2D') -> 'Vec2D':
-        vx = self._vx - other._vx
-        vy = self._vy - other._vy
-        magnitude = math.sqrt(vx ** 2 + vy ** 2)
-        direction = math.degrees(math.atan2(vy, vx))
-        return Vec2D(magnitude, direction)
-
-    def __isub__(self, other: 'Vec2D') -> 'Vec2D':
-        self._vx -= other._vx
-        self._vy -= other._vy
-        self._magnitude = math.sqrt(self._vx ** 2 + self._vy ** 2)
-        self._direction = math.degrees(math.atan2(self._vy, self._vx))
-        return self
+        return Vec2D(self.x - other.x, self.y - other.y)
 
     def __add__(self, other: 'Vec2D') -> 'Vec2D':
-        vx = self._vx + other._vx
-        vy = self._vy + other._vy
-        magnitude = math.sqrt(vx ** 2 + vy ** 2)
-        direction = math.degrees(math.atan2(vy, vx))
-        return Vec2D(magnitude, direction)
-
-    def __iadd__(self, other: 'Vec2D') -> 'Vec2D':
-        self._vx += other._vx
-        self._vy += other._vy
-        self._magnitude = math.sqrt(self._vx ** 2 + self._vy ** 2)
-        self._direction = math.degrees(math.atan2(self._vy, self._vx))
-        return self
+        return Vec2D(self.x + other.x, self.y + other.y)
 
     def __mul__(self, scalar: float) -> 'Vec2D':
-        return Vec2D(self.magnitude * scalar, self.direction)
+        if isinstance(scalar, int) or isinstance(scalar, float):
+            return Vec2D(self.x * scalar, self.y * scalar)
+        raise NotImplementedError('Can only multiply Vector2D by a scalar')
+
+    def __rmul__(self, scalar: float) -> 'Vec2D':
+        return self.__mul__(scalar)
+
+    def __neg__(self) -> 'Vec2D':
+        return Vec2D(-self.x, -self.y)
+
+    def __truediv__(self, scalar: float) -> 'Vec2D':
+        return Vec2D(self.x / scalar, self.y / scalar)
+
+    def __mod__(self, scalar: float) -> 'Vec2D':
+        return Vec2D(self.x % scalar, self.y % scalar)
+
+    def __abs__(self) -> float:
+        return math.sqrt(self.x ** 2 + self.y ** 2)
+
+    def distance_to(self, other: 'Vec2D') -> float:
+        return abs(self - other)
+
+    def to_polar(self) -> Tuple[float, float]:
+        return abs(self), math.degrees(math.atan2(self.y, self.x))
+
+    def relative_angle(self, other: 'Vec2D') -> float:
+        return math.degrees(math.atan2((other.y - self.y), (other.x - self.x)))

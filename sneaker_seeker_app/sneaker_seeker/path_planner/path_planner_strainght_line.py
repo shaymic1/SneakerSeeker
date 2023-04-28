@@ -17,5 +17,6 @@ class PathPlannerStraightLine(PathPlanner):
         if player.id not in self.tracked_players.keys():
             self.tracked_players[player.id] = player.id
             if player.speed.magnitude == 0:
-                player.speed = Vec2D(_magnitude=player.physical_specs.max_speed, _direction=random.uniform(0, 360))
-                player.observation_direction = utils.calc_angle(y=player.speed.vy, x=player.speed.vx)
+                player.speed = Vec2D.from_polar(magnitude=player.physical_specs.max_speed,
+                                                angle=random.uniform(0, 360))
+                player.observation_direction = utils.calc_angle(y=player.speed.y, x=player.speed.x)
