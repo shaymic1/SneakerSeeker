@@ -5,18 +5,19 @@ from sneaker_seeker.utilities import utils
 from sneaker_seeker.path_planner.path_planner_factory import PathPlannerFactory
 from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.sneaker import Sneaker
-from sneaker_seeker.game_obj.DKIZ import DKIZ
-from sneaker_seeker.game_obj.ROI import ROI
+from sneaker_seeker.game_obj.dkiz import DKIZ
+from sneaker_seeker.game_obj.roi import ROI
 from sneaker_seeker.visualization.canvas import Canvas
 from sneaker_seeker.simulation.simulator import Simulator
 
 
 def run_scenario(scenario: dict, args: dict, out_path: Path) -> None:
-    game_objects = { "roi": ROI(**scenario["ROI"]),  # Region Of Interest of the game of seeking
-        "dkiz": DKIZ(**scenario["sneaker"]["deployment"]["DKIZ"]),  # this the Dynamic Keep-In Zone for the Sneakers.
+    game_objects = {
+        "roi": ROI.from_dict(**scenario["ROI"]),  # Region Of Interest of the game of seeking
+        "dkiz": DKIZ.from_dict(**scenario["sneaker"]["deployment"]["DKIZ"]),  # this the Dynamic Keep-In Zone for the Sneakers.
         "visualizer": Canvas(frame_format=args["frames_format"], **scenario["world"], **scenario["canvas"]),
-        "sneakers": [Sneaker(**scenario["sneaker"]["common_data"]) for _ in range(scenario["sneaker"]["num"])],
-        "seekers": [Seeker(**scenario["seeker"]["common_data"]) for _ in range(scenario["seeker"]["num"])]
+        "sneakers": [Sneaker.from_dict(**scenario["sneaker"]["data"]) for _ in range(scenario["sneaker"]["num"])],
+        "seekers": [Seeker.from_dict(**scenario["seeker"]["data"]) for _ in range(scenario["seeker"]["num"])]
     }
     path_planners = {Seeker: PathPlannerFactory.create(scenario["seeker"]["path_planner"], **game_objects),
                      Sneaker: PathPlannerFactory.create(scenario["sneaker"]["path_planner"], **game_objects)}

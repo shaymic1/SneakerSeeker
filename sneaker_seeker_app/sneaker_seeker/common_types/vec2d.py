@@ -1,3 +1,4 @@
+from __future__ import annotations
 import math
 from typing import Tuple
 
@@ -9,7 +10,7 @@ class Vec2D:
         self.x, self.y = x, y
 
     @classmethod
-    def from_polar(cls, magnitude: float, angle: float) -> 'Vec2D':
+    def from_polar(cls, magnitude: float, angle: float) -> Vec2D:
         """an other Ctor to enable the creation from magnitude and angle."""
         return cls(x=magnitude * math.cos(math.radians(angle)),
                    y=magnitude * math.sin(math.radians(angle)))
@@ -82,6 +83,9 @@ class Vec2D:
 
     def to_polar(self) -> Tuple[float, float]:
         return abs(self), math.degrees(math.atan2(self.y, self.x))
+
+    def to_cartesian(self) -> Tuple[float, float]:
+        return self.x, self.y
 
     def relative_angle(self, other: 'Vec2D') -> float:
         return math.degrees(math.atan2((other.y - self.y), (other.x - self.x)))

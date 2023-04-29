@@ -1,14 +1,13 @@
 import math
 from pathlib import Path
 from typing import Optional
-import numpy as np
 
 from sneaker_seeker.utilities import utils
 from sneaker_seeker.common_types.vec2d import Vec2D
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
-from sneaker_seeker.game_obj.ROI import ROI
-from sneaker_seeker.game_obj.DKIZ import DKIZ
+from sneaker_seeker.game_obj.roi import ROI
+from sneaker_seeker.game_obj.dkiz import DKIZ
 from sneaker_seeker.path_planner.path_planner import PathPlanner
 from sneaker_seeker.visualization.visualizer import Visualizer
 
@@ -36,7 +35,7 @@ class Simulator:
         for player in self.players:
             player.move(dt)
 
-    def __visualize_board(self, curr_time: int) -> 'Simulator':
+    def __visualize_board(self, curr_time: int) -> None:
         self.visualizer.time_stamp(curr_time)
         self.visualizer.make_ROI(self.roi)
         self.visualizer.make_DKIZ(self.dkiz)
@@ -92,7 +91,7 @@ class Simulator:
         points = self.dkiz.generate_points_inside(num_of_points=len(self.sneakers), min_dist_between=min_dist)
         for sneaker, point in zip(self.sneakers, points):
             sneaker.location = point
-            sneaker.speed = Vec2D.from_polar(**self.scenario["sneaker"]["deployment"]["DKIZ"]["speed"])
+            sneaker.speed = self.dkiz.speed
 
         for seeker in self.seekers:
             pip = self.__calc_pip(self.dkiz, seeker)

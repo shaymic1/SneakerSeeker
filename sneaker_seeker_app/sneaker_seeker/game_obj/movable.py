@@ -5,11 +5,11 @@ from sneaker_seeker.common_types.vec2d import Vec2D
 class Movable:
     last_id = 0
 
-    def __init__(self, location: dict = None, speed: dict = None) -> None:
+    def __init__(self, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D()) -> None:
         Movable.last_id += 1
         self.id = Movable.last_id
-        self.location: Vec2D = Vec2D(**location) if location else Vec2D()
-        self.speed: Vec2D = Vec2D.from_polar(**speed) if speed else Vec2D()
+        self.location: Vec2D = location
+        self.speed: Vec2D = speed
 
     def move(self, dt: float):
         self.location += (self.speed * dt)

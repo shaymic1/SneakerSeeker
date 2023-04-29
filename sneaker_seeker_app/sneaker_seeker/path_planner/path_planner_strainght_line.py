@@ -1,7 +1,7 @@
 import random
 
 from .path_planner import PathPlanner
-from sneaker_seeker.game_obj.ROI import ROI
+from sneaker_seeker.game_obj.roi import ROI
 from sneaker_seeker.game_obj.player import Player
 from sneaker_seeker.common_types.vec2d import Vec2D
 from ..utilities import utils
