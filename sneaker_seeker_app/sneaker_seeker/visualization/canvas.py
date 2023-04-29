@@ -8,8 +8,8 @@ from matplotlib.patches import Circle
 from sneaker_seeker.visualization.visualizer import Visualizer
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
-from sneaker_seeker.game_obj.ROI import ROI
-from sneaker_seeker.game_obj.DKIZ import DKIZ
+from sneaker_seeker.game_obj.roi import ROI
+from sneaker_seeker.game_obj.dkiz import DKIZ
 
 
 def circle_dkiz_updater(dkiz_patch: matplotlib.patches, dkiz: DKIZ) -> None:
@@ -25,6 +25,7 @@ PlayerCanvasObj = Tuple[matplotlib.patches.Wedge, plt.Line2D, plt.Line2D]
 DKIZCanvasObj = Union[matplotlib.patches.Circle, any]
 ROICanvasObj = matplotlib.patches.Rectangle
 CanvasObj = Union[PlayerCanvasObj, DKIZCanvasObj, ROICanvasObj]
+
 
 class Canvas(Visualizer):
     __dkiz_shape_creator: dict[str, callable] = {"circle": circle_dkiz_creator}
@@ -78,7 +79,7 @@ class Canvas(Visualizer):
         return wedge, triangle[0], line[0]
 
     @staticmethod
-    def __update_player(player_canvas_obj, player: Union[Sneaker, Seeker], appearance: dict) -> None:
+    def __update_player(player_canvas_obj: PlayerCanvasObj, player: Union[Sneaker, Seeker], appearance: dict) -> None:
         player_canvas_obj[0].set_center((player.location.x, player.location.y))
         player_canvas_obj[0].set_facecolor(appearance["wedge"]["facecolor"])
         player_canvas_obj[0].set_alpha(appearance["wedge"]["alpha"])
@@ -103,7 +104,7 @@ class Canvas(Visualizer):
 
     def make_sneaker(self, sneaker: Sneaker):
         sneaker_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(sneaker.id)
-        appearance = self.object_appearance["sneaker"][sneaker.state.name.lower()]
+        appearance = self.object_appearance["sneaker"][sneaker.state.lower()]
         self.__print_player_to_canvas(sneaker_canvas_obj, sneaker, appearance)
 
     def make_ROI(self, roi: ROI):
