@@ -1,7 +1,6 @@
 import math
-import pytest
 from sneaker_seeker.common_types.vec2d import Vec2D
-
+from typing import List
 
 def test_magnitude():
     v = Vec2D(3, 4)
@@ -174,3 +173,76 @@ def test_vec2d_magnitude():
 
     v3 = Vec2D(0, 0)
     assert v3.magnitude == 0.0
+
+
+def test_points_between() -> None:
+    # Define two vectors for testing
+    v1 = Vec2D(0, 0)
+    v2 = Vec2D(10, 0)
+
+    # Test with 3 points
+    points = v1.points_between(v2, num_points=3)
+    assert len(points) == 3
+    assert points[0] == Vec2D(0, 0)
+    assert points[1] == Vec2D(5, 0)
+    assert points[2] == Vec2D(10, 0)
+
+    # Test with 4 points
+    points = v1.points_between(v2, num_points=4)
+    assert len(points) == 4
+    assert points[0] == Vec2D(0, 0)
+    assert points[1] == Vec2D(3.3333333333333335, 0)
+    assert points[2] == Vec2D(6.666666666666667, 0)
+    assert points[3] == Vec2D(10, 0)
+
+    # Test with offset from ends
+    points = v1.points_between(v2, num_points=3, offset_from_ends=1)
+    assert len(points) == 3
+    assert points[0] == Vec2D(1, 0)
+    assert points[1] == Vec2D(5, 0)
+    assert points[2] == Vec2D(9, 0)
+
+    # Test with a vertical vector
+    v1 = Vec2D(0, 0)
+    v2 = Vec2D(0, 10)
+    points = v1.points_between(v2, num_points=3)
+    assert len(points) == 3
+    assert points[0] == Vec2D(0, 0)
+    assert points[1] == Vec2D(0, 5)
+    assert points[2] == Vec2D(0, 10)
+
+    # Test with a diagonal vector
+    v1 = Vec2D(0, 0)
+    v2 = Vec2D(10, 10)
+    points = v1.points_between(v2, num_points=3)
+    assert len(points) == 3
+    assert points[0] == Vec2D(0, 0)
+    assert math.isclose(points[1].x, 5)
+    assert math.isclose(points[1].y, 5)
+    assert math.isclose(points[2].x, 10)
+    assert math.isclose(points[2].y, 10)
+
+    # Test with a diagonal vector
+    v1 = Vec2D(0, 0)
+    v2 = Vec2D(10, 10)
+    points = v1.points_between(v2, num_points=3, offset_from_ends=math.sqrt(2))
+    assert len(points) == 3
+    assert points[0] == Vec2D(1, 1)
+    assert math.isclose(points[1].x, 5)
+    assert math.isclose(points[1].y, 5)
+    assert math.isclose(points[2].x, 9)
+    assert math.isclose(points[2].y, 9)
+
+    # Test with a diagonal vector
+    v1 = Vec2D(0, 0)
+    v2 = Vec2D(10, 10)
+    points = v1.points_between(v2, num_points=5, offset_from_ends=math.sqrt(2))
+    assert len(points) == 5
+    assert points[0] == Vec2D(1, 1)
+    assert math.isclose(points[1].x, 3)
+    assert math.isclose(points[1].y, 3)
+    assert math.isclose(points[2].x, 5)
+    assert math.isclose(points[2].y, 5)
+    assert math.isclose(points[3].x, 7)
+    assert math.isclose(points[3].y, 7)
+    assert points[4] == Vec2D(9, 9)

@@ -7,12 +7,12 @@ from sneaker_seeker.game_obj.player import Player
 @pytest.fixture
 def player():
     return Player(
-        physical_specs={"cruise_speed": 50, "max_speed": 100, "max_speed_time": 20},
-        location={"x": 0, "y": 0},
+        physical_specs=PhysicalSpecs(**{"cruise_speed": 50, "max_speed": 100, "max_speed_time": 20}),
+        location=Vec2D(**{"x": 0, "y": 0}),
         observation_direction=0,
         los=1000,
         fov=60,
-        speed={"magnitude": 10, "angle": 0}
+        speed=Vec2D.from_polar(**{"magnitude": 10, "angle": 0})
     )
 
 

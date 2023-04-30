@@ -5,8 +5,10 @@ from functools import wraps
 import os
 from pathlib import Path
 import json
-
 import cv2
+from typing import Optional
+
+from sneaker_seeker.common_types.vec2d import Vec2D
 
 
 class JsonReader:
@@ -133,3 +135,23 @@ def real_time_fps(time_step_ms, save_frame_every_n_step) -> float:
 
 def calc_angle(x: float, y: float) -> float:
     return math.degrees(math.atan2(y, x))
+
+
+def __aim_ahead(dist: Vec2D, relative_speed_vec: Vec2D, friendly_speed_magnitude: float) -> Optional[float]:
+    "calculate the time till possible impact."
+    # Quadratic equation coefficients a*t^2 + b*t + c = 0
+    a = relative_speed_vec.magnitude ** 2 - friendly_speed_magnitude ** 2
+    b = 2 * (relative_speed_vec.x * dist.x + relative_speed_vec.y * dist.y)
+    c = (dist.x ** 2 + dist.y ** 2)
+    desc = b ** 2 - 4 * a * c
+    if desc < 0:  # If the discriminant is negative, then there is no solution
+        return None
+    return (2 * c) / (math.sqrt(desc) - b)
+
+
+def calc_pip(trgt_loc: Vec2D, trgt_spd: Vec2D, friendly_loc: Vec2D, friendly_spd: Vec2D) -> Optional[Vec2D]:
+    "calculate the point of future impact."
+    dist2d: Vec2D = trgt_loc - friendly_loc
+    relative_speed_vec: Vec2D = trgt_spd
+    dt_until_pip = __aim_ahead(dist2d, relative_speed_vec, friendly_spd.magnitude)
+    return trgt_loc + trgt_spd * dt_until_pip if dt_until_pip > 0 else None

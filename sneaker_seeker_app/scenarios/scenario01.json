@@ -12,7 +12,7 @@
   },
 
   "seeker": {
-    "num": 1,
+    "num": 5,
     "path_planner": "straight_line",
     "data": {
       "los": 600,
@@ -48,8 +48,8 @@
           "circle": {"radius":  2000}
         },
         "uncertainty_radius": 2000,
-        "location": { "x": 12500, "y": 8500 },
-        "speed":{ "magnitude": 50, "angle": 210 }
+        "location": { "x": 12500, "y": 7500 },
+        "speed":{ "magnitude": 50, "angle": 200 }
       }
     }
   },

@@ -16,3 +16,7 @@ class Movable:
 
     def steer(self, location: Vec2D):
         self.speed.angle = utils.calc_angle(x=(location.x - self.location.x), y=(location.y - self.location.y))
+
+    def calc_pip(self, trgt_loc: Vec2D, trgt_spd: Vec2D) -> Vec2D:
+        return utils.calc_pip(trgt_loc=trgt_loc, trgt_spd=trgt_spd,
+                              friendly_loc=self.location, friendly_spd=self.speed)

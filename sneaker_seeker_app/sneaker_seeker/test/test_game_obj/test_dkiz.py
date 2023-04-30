@@ -6,7 +6,16 @@ from sneaker_seeker.game_obj.dkiz import DKIZ
 @pytest.fixture
 def dkiz():
     # Create a DKIZ object with some default values for testing purposes
-    return DKIZ({"type": "circle", "circle": {"radius":  1}}, {"x": 0, "y": 0}, {"magnitude": 1, "angle": 0})
+    args = {
+        "shape": {
+            "type": "circle",
+            "circle": {"radius": 1}
+        },
+        "uncertainty_radius": 1,
+        "location": {"x": 0, "y": 0},
+        "speed": {"magnitude": 50, "angle": 210}
+    }
+    return DKIZ.from_dict(**args)
 
 
 def test_contains_circle(dkiz):

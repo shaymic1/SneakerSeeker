@@ -1,6 +1,6 @@
-from .path_planner import PathPlanner
-from .path_planner_random_walk import PathPlannerRandomWalk
-from .path_planner_strainght_line import PathPlannerStraightLine
+from sneaker_seeker.path_planner.path_planner import PathPlanner
+from sneaker_seeker.path_planner.path_planner_random_walk import PathPlannerRandomWalk
+from sneaker_seeker.path_planner.path_planner_strainght_line import PathPlannerStraightLine
 
 
 class PathPlannerFactory:

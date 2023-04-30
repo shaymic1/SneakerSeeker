@@ -13,16 +13,22 @@ from sneaker_seeker.game_obj.dkiz import DKIZ
 
 
 def circle_dkiz_updater(dkiz_patch: matplotlib.patches, dkiz: DKIZ) -> None:
-    dkiz_patch.set_center((dkiz.location.x, dkiz.location.y))
+    dkiz_patch[0].set_center((dkiz.location.x, dkiz.location.y))
+    dkiz_patch[1].set_data([dkiz.l_frontal_line.location.x, dkiz.r_frontal_line.location.x],
+                           [dkiz.l_frontal_line.location.y, dkiz.r_frontal_line.location.y])
 
 
-def circle_dkiz_creator(ax: plt.Axes, dkiz: DKIZ, appearance: dict) -> matplotlib.patches.Circle:
-    return ax.add_patch(matplotlib.patches.Circle(xy=(dkiz.location.x, dkiz.location.y),
-                                                  **dkiz.dimensions, **appearance))
+def circle_dkiz_creator(ax: plt.Axes, dkiz: DKIZ, appearance: dict) -> Tuple[matplotlib.patches.Circle, plt.Line2D]:
+    circle = ax.add_patch(matplotlib.patches.Circle(xy=(dkiz.location.x, dkiz.location.y),
+                                                    **dkiz.dimensions, **appearance))
+    line_x_data = [dkiz.l_frontal_line.location.x, dkiz.r_frontal_line.location.x]
+    line_y_data = [dkiz.l_frontal_line.location.y, dkiz.r_frontal_line.location.y]
+    line: list[plt.Line2D] = ax.plot(line_x_data, line_y_data, alpha=0)
+    return circle, line[0]
 
 
 PlayerCanvasObj = Tuple[matplotlib.patches.Wedge, plt.Line2D, plt.Line2D]
-DKIZCanvasObj = Union[matplotlib.patches.Circle, any]
+DKIZCanvasObj = Tuple[Union[matplotlib.patches.Circle, any], plt.Line2D]
 ROICanvasObj = matplotlib.patches.Rectangle
 CanvasObj = Union[PlayerCanvasObj, DKIZCanvasObj, ROICanvasObj]
 

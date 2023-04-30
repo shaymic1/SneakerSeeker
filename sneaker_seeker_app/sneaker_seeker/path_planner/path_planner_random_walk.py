@@ -1,4 +1,4 @@
-from .path_planner import PathPlanner
+from sneaker_seeker.path_planner.path_planner import PathPlanner
 from sneaker_seeker.game_obj.roi import ROI
 from sneaker_seeker.game_obj.player import Player
 

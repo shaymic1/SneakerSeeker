@@ -59,9 +59,9 @@ class DKIZ(Movable):
         return any([candidate_point.distance_to(chosen_p) < min_dist for chosen_p in chosen_points])
 
     def __frontal_line_section(self) -> Tuple[Optional[Point], Optional[Point]]:
-        "return (left_point, right_point) of the frontal line of advancing DKIZ from DKIZ point of view."
+        """return (left_point, right_point) of the frontal line of advancing DKIZ from DKIZ point of view."""
         if self.speed.magnitude == 0:
-            return None, None
+            return Point(location=self.location, speed=self.speed), Point(location=self.location, speed=self.speed)
         front_right_loc = self.location + Vec2D.from_polar(magnitude=math.sqrt(2) * self.uncertainty_radius,
                                                            angle=self.speed.angle - 45)
         front_left_loc = self.location + Vec2D.from_polar(magnitude=math.sqrt(2) * self.uncertainty_radius,
