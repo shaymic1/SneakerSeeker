@@ -20,10 +20,10 @@ def circle_dkiz_updater(dkiz_patch: matplotlib.patches, dkiz: DKIZ) -> None:
 
 def circle_dkiz_creator(ax: plt.Axes, dkiz: DKIZ, appearance: dict) -> Tuple[matplotlib.patches.Circle, plt.Line2D]:
     circle = ax.add_patch(matplotlib.patches.Circle(xy=(dkiz.location.x, dkiz.location.y),
-                                                    **dkiz.dimensions, **appearance))
+                                                    **dkiz.dimensions, **appearance["inner_circle"]))
     line_x_data = [dkiz.l_frontal_line.location.x, dkiz.r_frontal_line.location.x]
     line_y_data = [dkiz.l_frontal_line.location.y, dkiz.r_frontal_line.location.y]
-    line: list[plt.Line2D] = ax.plot(line_x_data, line_y_data, alpha=0)
+    line: list[plt.Line2D] = ax.plot(line_x_data, line_y_data, **appearance["frontal_line"])
     return circle, line[0]
 
 
@@ -66,7 +66,7 @@ class Canvas(Visualizer):
         self.ax.set_ylim([-self.margin, self.height + self.margin])
         self.ax.set_aspect("auto", adjustable="box", anchor="C")
 
-    def save(self, path: Path):
+    def save(self, path: Path) -> None:
         self.fig.savefig(f"{path}.{self.frame_format}",
                          format="jpeg" if self.frame_format == "jpg" else self.frame_format)
 
@@ -97,35 +97,35 @@ class Canvas(Visualizer):
         player_canvas_obj[2].set_alpha(appearance["line"]["alpha"])
 
     def __print_player_to_canvas(self, player_canvas_obj: PlayerCanvasObj, player: Union[Sneaker, Seeker],
-                                 appearance: dict):
+                                 appearance: dict) -> None:
         if player_canvas_obj is None:
             self.objects[player.id] = self.__make_player(player, appearance)
         else:
             Canvas.__update_player(player_canvas_obj=player_canvas_obj, player=player, appearance=appearance)
 
-    def make_seeker(self, seeker: Seeker):
+    def make_seeker(self, seeker: Seeker) -> None:
         seeker_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(seeker.id)
         appearance = self.object_appearance["seeker"]
         self.__print_player_to_canvas(seeker_canvas_obj, seeker, appearance)
 
-    def make_sneaker(self, sneaker: Sneaker):
+    def make_sneaker(self, sneaker: Sneaker) -> None:
         sneaker_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(sneaker.id)
         appearance = self.object_appearance["sneaker"][sneaker.state.lower()]
         self.__print_player_to_canvas(sneaker_canvas_obj, sneaker, appearance)
 
-    def make_ROI(self, roi: ROI):
+    def make_ROI(self, roi: ROI) -> None:
         self.ax.add_patch(matplotlib.patches.Rectangle(xy=(roi.location.x, roi.location.y),
                                                        width=roi.width,
                                                        height=roi.height,
                                                        **self.object_appearance["ROI"]))
 
-    def make_DKIZ(self, dkiz: DKIZ):
-        dkiz_patch: Union[matplotlib.patches.Circle, any] = self.objects.get(dkiz.id)
-        if dkiz_patch is None:  # create new object
+    def make_DKIZ(self, dkiz: DKIZ) -> None:
+        dkiz_canvas_obj: Union[matplotlib.patches.Circle, any] = self.objects.get(dkiz.id)
+        if dkiz_canvas_obj is None:  # create new object
             self.objects[dkiz.id] = Canvas.__dkiz_shape_creator[dkiz.type](ax=self.ax, dkiz=dkiz,
                                                                            appearance=self.object_appearance["DKIZ"])
         else:  # update existing object
-            Canvas.__dkiz_shape_updater[dkiz.type](dkiz_patch, dkiz)
+            Canvas.__dkiz_shape_updater[dkiz.type](dkiz_canvas_obj, dkiz)
 
-    def time_stamp(self, curr_time):
+    def time_stamp(self, curr_time) -> None:
         self.ax.set_title(f"time[sec]: {curr_time / 1000:.1f}")

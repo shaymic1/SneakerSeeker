@@ -78,7 +78,10 @@
         "line": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.6}
       },
       "ROI": { "linewidth": 2, "edgecolor": "green", "facecolor": "none" },
-      "DKIZ": { "linewidth": 0.5, "edgecolor": "red", "facecolor": "none", "alpha": 0.5 }
+      "DKIZ": {
+        "inner_circle": {"linewidth": 0.5, "edgecolor": "red", "facecolor": "none", "alpha": 0.5},
+        "frontal_line": {"alpha": 1}
+      }
     }
   }
 
