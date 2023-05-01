@@ -28,10 +28,10 @@ class DKIZ(Movable):
         return cls(type=shape["type"], dimensions=shape[shape["type"]], location=loc, speed=spd,
                    uncertainty_radius=uncertainty_radius)
 
-    def move(self, dt: float):
-        super().move(dt)
-        self.l_frontal_line.move(dt)
-        self.r_frontal_line.move(dt)
+    def advance(self, dt: float):
+        super().advance(dt)
+        self.l_frontal_line.advance(dt)
+        self.r_frontal_line.advance(dt)
 
     def contains(self, other_location: Vec2D):
         if self.type == 'circle':

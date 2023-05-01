@@ -6,9 +6,10 @@ import numpy as np
 
 
 class PathPlannerRandomWalk(PathPlanner):
-    def __init__(self, roi: ROI, **_ignore) -> None:
-        self.roi = roi
+    def __init__(self, **_ignore) -> None:
+        pass
 
-    def set_path(self, player: Player):
-        player.speed.magnitude = np.random.uniform(low=0, high=player.physical_specs.cruise_speed)
-        player.speed.angle = np.random.uniform(low=0, high=np.pi * 2)
+    def set_path(self, players: list[Player]):
+        for player in players:
+            player.speed.magnitude = np.random.uniform(low=0, high=player.physical_specs.cruise_speed)
+            player.speed.angle = np.random.uniform(low=0, high=np.pi * 2)

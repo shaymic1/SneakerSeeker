@@ -1,41 +1,47 @@
-import math
 from pathlib import Path
-from typing import Optional
+from typing import Tuple
 
 from sneaker_seeker.utilities import utils
 from sneaker_seeker.common_types.vec2d import Vec2D
-from sneaker_seeker.common_types.point import Point
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.roi import ROI
 from sneaker_seeker.game_obj.dkiz import DKIZ
 from sneaker_seeker.path_planner.path_planner import PathPlanner
+from sneaker_seeker.deployer.deployer import Deployer
 from sneaker_seeker.visualization.visualizer import Visualizer
 
 
 class Simulator:
-    def __init__(self, out_path: Path, scenario: dict, visualizer: Visualizer, path_planners: dict[type, PathPlanner],
-                 roi: ROI, dkiz: DKIZ, seekers: list[Seeker], sneakers: list[Sneaker]) -> None:
+    def __init__(self, out_path: Path, visualizer: Visualizer, path_planners: dict[type, PathPlanner],
+                 deployers: dict[type, Deployer], roi: ROI, dkiz: DKIZ, seekers: list[Seeker],
+                 sneakers: list[Sneaker]) -> None:
         self.out_path: Path = out_path
-        self.scenario = scenario
         self.visualizer = visualizer
         self.path_planners = path_planners
+        self.deployers = deployers
         self.roi = roi
         self.dkiz = dkiz
         self.seekers = seekers
         self.sneakers = sneakers
-        self.players = list(seekers + sneakers)
+        self.keep_running = True
 
-    def __set_players_path(self):
-        for player in self.players:
-            self.path_planners[type(player)].set_path(player)
+    def __deploy_players(self):
+        self.deployers[type(self.seekers[0])].deploy(self.seekers)
+        self.deployers[type(self.sneakers[0])].deploy(self.sneakers)
 
-    def __move_objects(self, dt: int):
-        self.dkiz.move(dt)
-        for player in self.players:
-            player.move(dt)
+    def __set_players_direction(self):
+        self.path_planners[type(self.seekers[0])].set_path(self.seekers)
+        self.path_planners[type(self.sneakers[0])].set_path(self.sneakers)
 
-    def __visualize_board(self, curr_time: int) -> None:
+    def __advance_objects(self, dt: float):
+        self.dkiz.advance(dt)
+        for sneaker in self.sneakers:
+            sneaker.advance(dt)
+        for seeker in self.seekers:
+            seeker.advance(dt)
+
+    def __visualize_board(self, curr_time: float) -> None:
         self.visualizer.time_stamp(curr_time)
         self.visualizer.make_ROI(self.roi)
         self.visualizer.make_DKIZ(self.dkiz)
@@ -44,41 +50,67 @@ class Simulator:
         for sneaker in self.sneakers:
             self.visualizer.make_sneaker(sneaker)
 
-    def __step(self, curr_time: int, should_record_step: bool = True) -> None:
-        self.__set_players_path()
-        self.__move_objects(dt=self.scenario["time_step_ms"] / 1000)
-        self.__check_for_detections()
-        if should_record_step:
+    def __step(self, curr_time: float, t_step: float, should_record_step: bool = True) -> None:
+        self.__set_players_direction()
+        self.__advance_objects(dt=t_step / 1000)
+        if self.__is_new_detection_found():
+            assignments = self.__best_assignments()
+            self.__set_assignments(assignments)
+        self.__handle_catches()
+        self.keep_running = self.__should_keep_run()
+        if should_record_step or not self.keep_running:
             self.__visualize_board(curr_time)
             step_full_name = utils.append_time_to_path(self.out_path, curr_time)
             self.visualizer.save(step_full_name)
 
-    def run(self, save_frame_every_n_step: int) -> None:
-        self.__set_initial_deployment()
-        curr_time = 0
-        time_step, time_goal = self.scenario["time_step_ms"], self.scenario["time_goal_ms"]
-        while curr_time <= time_goal:
-            self.__step(curr_time, should_record_step=curr_time % (time_step * save_frame_every_n_step) == 0)
-            curr_time += time_step
+    def run(self, t_step: float, t_goal: float, save_frame_every_n_step: int = 1) -> None:
+        self.__initialize_board()
+        t_curr = 0
+        while t_curr <= t_goal and self.keep_running:
+            self.__step(t_curr, t_step, should_record_step=t_curr % (t_step * save_frame_every_n_step) == 0)
+            t_curr += t_step
 
-    def __check_for_detections(self) -> bool:
-        still_unknown_sneakers = [s for s in self.sneakers if s.is_undetected()]
+    def __is_new_detection_found(self) -> bool:
+        still_unknown_sneakers = [s for s in self.sneakers if s.state == Sneaker.State.UNDETECTED]
         for sneaker in still_unknown_sneakers:
             for seeker in self.seekers:
                 if seeker.can_see(sneaker.location):
-                    sneaker.detect()
-        return any([s.is_detected() for s in still_unknown_sneakers])
+                    sneaker.state = Sneaker.State.DETECTED
+        return any([s.state == Sneaker.State.DETECTED for s in still_unknown_sneakers])
 
-    def __set_initial_deployment(self):
-        min_dist = self.sneakers[0].physical_specs.min_dist_between_eachother
-        initial_points = self.dkiz.generate_points_inside(num_of_points=len(self.sneakers), min_dist_between=min_dist)
-        for sneaker, point in zip(self.sneakers, initial_points):
-            sneaker.location = point
-            sneaker.speed = self.dkiz.speed
+    def __initialize_board(self):
+        self.__deploy_players()
 
-        locations: list[Vec2D] = self.dkiz.r_frontal_line.location.points_between(self.dkiz.l_frontal_line.location,
-                                                                                  len(self.seekers), offset_from_ends=500)
-        for seeker, loc in zip(self.seekers, locations):
-            pip = seeker.calc_pip(trgt_loc=loc, trgt_spd=self.dkiz.speed)
-            seeker.steer(pip if pip else Vec2D(x=0, y=0))
-            seeker.observation_direction = seeker.speed.angle
+    def __best_assignments(self) -> dict[Seeker, Tuple[Sneaker, Vec2D, float]]:
+        assignments = {}
+        for sneaker in [s for s in self.sneakers if s.state == Sneaker.State.DETECTED]:
+            seekers_time_for_collision: dict[Seeker, (Vec2D, float)] = {}
+            for seeker in [s for s in self.seekers if s.state == Seeker.State.SEEK]:
+                point, time = utils.calc_possible_collision_point_and_time(sneaker.location, sneaker.speed, seeker.location,
+                                                                           seeker.physical_specs.max_speed)
+                seekers_time_for_collision[seeker] = (point, time)
+            fastest_seeker = min(seekers_time_for_collision, key=lambda k: seekers_time_for_collision[k][1])
+            point, time = seekers_time_for_collision[fastest_seeker]
+            assignments[fastest_seeker] = (sneaker, point, time)
+        return assignments
+
+    def __handle_catches(self):
+        for seeker in [s for s in self.seekers if s.destination and s.destination.arrived and s.state.CATCH]:
+            for sneaker in self.sneakers:
+                if seeker.location.distance_to(sneaker.location) <= seeker.catch_dist:
+                    self.visualizer.remove_player(sneaker)
+                    self.visualizer.remove_player(seeker)
+                    self.sneakers.remove(sneaker)
+                    self.seekers.remove(seeker)
+
+    def __should_keep_run(self) -> bool:
+        if len(self.seekers) == 0 or len(self.sneakers) == 0:
+            print(f"The ended with only {len(self.sneakers)} sneakers left.")
+            return False
+        return True
+
+    def __set_assignments(self, assignments: dict[Seeker, Tuple[Sneaker, Vec2D, float]]):
+        for seeker, (sneaker, point, time) in assignments.items():
+            seeker.set_destination(dst=point, new_speed=seeker.physical_specs.max_speed, arrival_time=time)
+            seeker.state = Seeker.State.CATCH
+            sneaker.state = Sneaker.State.TARGETED

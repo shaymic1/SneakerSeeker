@@ -1,5 +1,6 @@
 from sneaker_seeker.utilities import utils
 from sneaker_seeker.common_types.vec2d import Vec2D
+from sneaker_seeker.common_types.destination import Destination
 
 
 class Movable:
@@ -10,13 +11,30 @@ class Movable:
         self.id = Movable.last_id
         self.location: Vec2D = location
         self.speed: Vec2D = speed
+        self.destination = None
 
-    def move(self, dt: float):
+    def __hash__(self):
+        return self.id.__hash__()
+
+    def __eq__(self, other):
+        return isinstance(other, Movable) and self.id == other.id
+
+    def advance(self, dt: float) -> None:
         self.location += (self.speed * dt)
+        if self.destination:
+            self.destination.arrival_time -= dt
+            self.destination.arrived = (abs(self.destination.arrival_time) < dt)
 
-    def steer(self, location: Vec2D):
+    def steer_to(self, location: Vec2D) -> None:
         self.speed.angle = utils.calc_angle(x=(location.x - self.location.x), y=(location.y - self.location.y))
 
-    def calc_pip(self, trgt_loc: Vec2D, trgt_spd: Vec2D) -> Vec2D:
-        return utils.calc_pip(trgt_loc=trgt_loc, trgt_spd=trgt_spd,
-                              friendly_loc=self.location, friendly_spd=self.speed)
+    def set_destination(self, dst: Vec2D, new_speed: float = None, arrival_time: float = None) -> None:
+        self.speed.angle = utils.calc_angle(x=(dst.x - self.location.x), y=(dst.y - self.location.y))
+        if new_speed:
+            self.speed.magnitude = new_speed
+        if not arrival_time:
+            arrival_time = self.location.distance_to(dst) / self.speed.magnitude
+        self.destination = Destination(location=dst, arrival_time=arrival_time)
+
+    def stop(self) -> None:
+        self.speed.magnitude = 0.01

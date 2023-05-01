@@ -6,9 +6,10 @@ import os
 from pathlib import Path
 import json
 import cv2
-from typing import Optional
+from typing import Optional, Tuple
 
 from sneaker_seeker.common_types.vec2d import Vec2D
+from sneaker_seeker.game_obj.roi import ROI
 
 
 class JsonReader:
@@ -65,13 +66,13 @@ def read_json(fname: str = 'config.json') -> dict:
         print(type(e), e, sep='\n')
 
 
-def append_time_to_path(out_path: Path, time: int) -> Path:
+def append_time_to_path(out_path: Path, time: float) -> Path:
     return Path(f"{str(Path(out_path / 'fig'))}_{str(time).zfill(9)}")
 
 
 def parse_args_to_dict(debug_input=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--scenario", required=True, type=Path, nargs='+',
+    parser.add_argument("-s", "--scenarios", required=True, type=Path, nargs='+',
                         help="provide the list of paths to *.json scenario files")
     parser.add_argument("-o", "--out_path", required=False, default=Path(os.getcwd()), type=Path,
                         help="output path")
@@ -119,7 +120,7 @@ def make_output_path(outputdir: str, scenario_name: str, empty_output_path: bool
 
 
 def scale_world(scenario: dict, scale_factor):
-    for name in ["world"]:
+    for name in ["board"]:
         for k in scenario[name].keys():
             scenario[name][k] *= scale_factor
     for name, sub_name in [["canvas", "fig_size"]]:
@@ -149,9 +150,21 @@ def __aim_ahead(dist: Vec2D, relative_speed_vec: Vec2D, friendly_speed_magnitude
     return (2 * c) / (math.sqrt(desc) - b)
 
 
-def calc_pip(trgt_loc: Vec2D, trgt_spd: Vec2D, friendly_loc: Vec2D, friendly_spd: Vec2D) -> Optional[Vec2D]:
-    "calculate the point of future impact."
+def calc_possible_collision_point_and_time(trgt_loc: Vec2D, trgt_spd: Vec2D,
+                                           friendly_loc: Vec2D, friendly_spd: float) -> Optional[Tuple[Vec2D, float]]:
+    """
+        calculate the point of future impact.
+            return: 'None' if friendly cannot reach.
+    """
     dist2d: Vec2D = trgt_loc - friendly_loc
     relative_speed_vec: Vec2D = trgt_spd
-    dt_until_pip = __aim_ahead(dist2d, relative_speed_vec, friendly_spd.magnitude)
-    return trgt_loc + trgt_spd * dt_until_pip if dt_until_pip > 0 else None
+    if dt_until_collision := __aim_ahead(dist2d, relative_speed_vec, friendly_spd):
+        return trgt_loc + trgt_spd * dt_until_collision, dt_until_collision
+    return None
+
+
+def point_in_roi(point: Vec2D, roi: ROI):
+    x1, y1 = roi.location.x, roi.location.y
+    x2, y2 = x1 + roi.width, y1 + roi.height
+    x, y = point.x, point.y
+    return x1 <= x <= x2 and y1 <= y <= y2

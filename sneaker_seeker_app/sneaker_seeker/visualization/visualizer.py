@@ -29,3 +29,6 @@ class Visualizer(ABC):
 
     def time_stamp(self, curr_time) -> None:
         pass
+
+    def remove_player(self, seeker) -> None:
+        pass

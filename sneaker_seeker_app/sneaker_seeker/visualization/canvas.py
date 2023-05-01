@@ -5,6 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 
+from sneaker_seeker.game_obj.player import Player
 from sneaker_seeker.visualization.visualizer import Visualizer
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
@@ -37,8 +38,8 @@ class Canvas(Visualizer):
     __dkiz_shape_creator: dict[str, callable] = {"circle": circle_dkiz_creator}
     __dkiz_shape_updater: dict[str, callable] = {"circle": circle_dkiz_updater}
 
-    def __init__(self, height: int, width: int, margin: int, name: str, frame_format: str,
-                 x_label: str, y_label: str, fig_size: dict, object_appearance: dict) -> None:
+    def __init__(self, height: int, width: int, margin: int, name: str, x_label: str, y_label: str, fig_size: dict,
+                 object_appearance: dict, frame_format: str = "jpg") -> None:
         self.height = height
         self.width = width
         self.fig, self.ax = self.__make_fig(**fig_size)
@@ -87,12 +88,16 @@ class Canvas(Visualizer):
     @staticmethod
     def __update_player(player_canvas_obj: PlayerCanvasObj, player: Union[Sneaker, Seeker], appearance: dict) -> None:
         player_canvas_obj[0].set_center((player.location.x, player.location.y))
+        player_canvas_obj[0].set_theta1(player.observation_direction - player.fov / 2)
+        player_canvas_obj[0].set_theta2(player.observation_direction + player.fov / 2)
         player_canvas_obj[0].set_facecolor(appearance["wedge"]["facecolor"])
         player_canvas_obj[0].set_alpha(appearance["wedge"]["alpha"])
         player_canvas_obj[1].set_data([player.location.x], [player.location.y])
+        player_canvas_obj[1].set_marker((3, 0, player.speed.angle - 90))  # set triangle angle
         player_canvas_obj[1].set_color(appearance["triangle"]["color"])
         player_canvas_obj[1].set_alpha(appearance["triangle"]["alpha"])
         player_canvas_obj[2].set_data([player.location.x], [player.location.y])
+        player_canvas_obj[2].set_marker((2, 0, player.speed.angle - 90))  # set line angle
         player_canvas_obj[2].set_color(appearance["line"]["color"])
         player_canvas_obj[2].set_alpha(appearance["line"]["alpha"])
 
@@ -117,15 +122,25 @@ class Canvas(Visualizer):
         self.ax.add_patch(matplotlib.patches.Rectangle(xy=(roi.location.x, roi.location.y),
                                                        width=roi.width,
                                                        height=roi.height,
-                                                       **self.object_appearance["ROI"]))
+                                                       **self.object_appearance["roi"]))
 
     def make_DKIZ(self, dkiz: DKIZ) -> None:
         dkiz_canvas_obj: Union[matplotlib.patches.Circle, any] = self.objects.get(dkiz.id)
         if dkiz_canvas_obj is None:  # create new object
             self.objects[dkiz.id] = Canvas.__dkiz_shape_creator[dkiz.type](ax=self.ax, dkiz=dkiz,
-                                                                           appearance=self.object_appearance["DKIZ"])
+                                                                           appearance=self.object_appearance["dkiz"])
         else:  # update existing object
             Canvas.__dkiz_shape_updater[dkiz.type](dkiz_canvas_obj, dkiz)
 
     def time_stamp(self, curr_time) -> None:
         self.ax.set_title(f"time[sec]: {curr_time / 1000:.1f}")
+
+    def remove_player(self, player: Player) -> None:
+        player_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(player.id)
+        player_canvas_obj[0].remove()
+        player_canvas_obj[1].remove()
+        player_canvas_obj[2].remove()
+
+
+
+

@@ -26,6 +26,6 @@ def test_player_creation(player):
 
 
 def test_player_move(player):
-    player.move(1)
+    player.advance(1)
     assert player.location.x == 10
     assert player.location.y == 0

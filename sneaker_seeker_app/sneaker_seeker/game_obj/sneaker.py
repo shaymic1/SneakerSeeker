@@ -10,7 +10,7 @@ class Sneaker(Player):
     class State(StrEnum):
         UNDETECTED = auto()
         DETECTED = auto()
-        DESTROYED = auto()
+        TARGETED = auto()
 
     def __init__(self, physical_specs: PhysicalSpecs, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D(),
                  los: float = 100, fov: float = 180, observation_direction: float = None) -> None:
@@ -26,18 +26,3 @@ class Sneaker(Player):
         specs = PhysicalSpecs(**physical_specs)
         obser_dir = observation_direction if observation_direction else spd.angle
         return cls(physical_specs=specs, location=loc, speed=spd, los=los, fov=fov, observation_direction=obser_dir)
-
-    def detect(self):
-        self.state = Sneaker.State.DETECTED
-
-    def destroy(self):
-        self.state = Sneaker.State.DESTROYED
-
-    def is_undetected(self):
-        return self.state == Sneaker.State.UNDETECTED
-
-    def is_detected(self):
-        return self.state == Sneaker.State.DETECTED
-
-    def is_destroyed(self):
-        return self.state == Sneaker.State.DESTROYED

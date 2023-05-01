@@ -34,6 +34,7 @@ class Vec2D:
     @angle.setter
     def angle(self, value: float) -> None:
         mag = self.magnitude
+        mag = 0.01 if mag == 0 else mag
         self.x = mag * math.cos(math.radians(value))
         self.y = mag * math.sin(math.radians(value))
 

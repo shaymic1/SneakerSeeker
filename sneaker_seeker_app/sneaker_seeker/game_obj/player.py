@@ -12,3 +12,8 @@ class Player(Movable):
         self.observation_direction: float = observation_direction
         self.los: float = los
         self.fov: float = fov
+
+    def observe_to_location(self, trgt: Vec2D):
+        self.observation_direction = self.location.relative_angle(trgt)
+
+
