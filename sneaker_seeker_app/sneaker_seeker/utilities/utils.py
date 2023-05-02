@@ -5,6 +5,8 @@ from functools import wraps
 import os
 from pathlib import Path
 import json
+
+import colorama
 import cv2
 from typing import Optional, Tuple
 
@@ -56,6 +58,17 @@ def my_profiler(orig_fun):
         return result
 
     return wrapper
+
+
+def progress_bar(progress, total, width=25, color=colorama.Fore.YELLOW):
+    percent = 100 * (progress / float(total))
+    bar = '█' * int(percent // (100 / width)) + '-' * (width - int(percent // (100 / width)))
+    if percent < 100:
+        print(color + f'\r|{bar}| {percent:.2f}%', end='\r')
+    else:
+        color = colorama.Fore.GREEN
+        print(color + f'\r|{bar}| {percent:.2f}%', end='\r')
+        print(colorama.Fore.RESET)
 
 
 def read_json(fname: str = 'config.json') -> dict:
