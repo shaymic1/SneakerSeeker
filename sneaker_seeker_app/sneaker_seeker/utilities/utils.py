@@ -99,13 +99,14 @@ def parse_args_to_dict(debug_input=None):
                         help="speed up the video by that factor")
     parser.add_argument("--scale_world_factor", required=False, default=1, type=float,
                         help="scale the scenario world by that factor")
-    parser.add_argument("--save_frame_every_n_step", required=False, default=10, type=int,
+    parser.add_argument("--save_frame_every_n_step", required=False, default=1, type=int,
                         help="dilute the number of frames in the video to speed up the run time of the application.")
     return parser.parse_args(debug_input).__dict__
 
 
 # @my_timer
-def make_video(frames_dir: Path, frames_format: str, video_name: str, fps: float, keep_frames: bool = False) -> Path:
+def make_video(frames_dir: Path, frames_format: str, video_name: str, fps: float, keep_frames: bool = False,
+               video_format: str = "avi") -> Path:
     png_files_path = os.path.join(frames_dir, f'*.{frames_format}')
     frames = [cv2.imread(f) for f in glob.glob(png_files_path)]
     if not frames:
@@ -115,8 +116,9 @@ def make_video(frames_dir: Path, frames_format: str, video_name: str, fps: float
         for f in glob.glob(os.path.join(frames_dir, '*.*')):
             os.remove(f)
     frame_size = (frames[0].shape[1], frames[0].shape[0])
-    vid_path = frames_dir / video_name
-    out = cv2.VideoWriter(str(vid_path), cv2.VideoWriter_fourcc(*'DIVX'), fps=fps, frameSize=frame_size)
+    vid_path = frames_dir / f"{video_name}.{video_format}"
+    out = cv2.VideoWriter(str(vid_path), cv2.VideoWriter_fourcc(*'MP4V' if video_format == "mp4" else 'DIVX'), fps=fps,
+                          frameSize=frame_size)
     for frame in frames:
         out.write(frame)
     out.release()

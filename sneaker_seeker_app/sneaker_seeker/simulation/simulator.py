@@ -17,20 +17,20 @@ class Simulator:
                  deployers: dict[type, Deployer], roi: ROI, dkiz: DKIZ, seekers: list[Seeker],
                  sneakers: list[Sneaker]) -> None:
         self.out_path: Path = out_path
-        self.visualizer = visualizer
-        self.path_planners = path_planners
-        self.deployers = deployers
-        self.roi = roi
-        self.dkiz = dkiz
-        self.seekers = seekers
-        self.sneakers = sneakers
+        self.visualizer: Visualizer = visualizer
+        self.path_planners: dict[type, PathPlanner] = path_planners
+        self.deployers: dict[type, Deployer] = deployers
+        self.roi: ROI = roi
+        self.dkiz: DKIZ = dkiz
+        self.seekers: list[Seeker] = seekers
+        self.sneakers: list[Sneaker] = sneakers
         self.keep_running = True
 
     def __deploy_players(self):
         self.deployers[type(self.seekers[0])].deploy(self.seekers)
         self.deployers[type(self.sneakers[0])].deploy(self.sneakers)
 
-    def __set_players_direction(self):
+    def __set_players_next_location(self):
         self.path_planners[type(self.seekers[0])].set_path(self.seekers)
         self.path_planners[type(self.sneakers[0])].set_path(self.sneakers)
 
@@ -51,7 +51,7 @@ class Simulator:
             self.visualizer.make_sneaker(sneaker)
 
     def __step(self, curr_time: float, t_step: float, should_record_step: bool = True) -> None:
-        self.__set_players_direction()
+        self.__set_players_next_location()
         self.__advance_objects(dt=t_step / 1000)
         if self.__is_new_detection_found():
             assignments = self.__best_assignments()
@@ -67,6 +67,7 @@ class Simulator:
         self.__initialize_board()
         t_curr = 0
         while t_curr <= t_goal and self.keep_running:
+            utils.progress_bar(progress=t_curr, total=t_goal)
             self.__step(t_curr, t_step, should_record_step=t_curr % (t_step * save_frame_every_n_step) == 0)
             t_curr += t_step
 
@@ -77,7 +78,6 @@ class Simulator:
                 if seeker.can_see(sneaker.location):
                     sneaker.state = Sneaker.State.DETECTED
         return any([s.state == Sneaker.State.DETECTED for s in still_unknown_sneakers])
-
     def __initialize_board(self):
         self.__deploy_players()
 

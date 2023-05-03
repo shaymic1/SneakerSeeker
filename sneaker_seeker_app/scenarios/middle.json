@@ -1,6 +1,6 @@
 {
   "time_goal_ms": 170000,
-  "time_step_ms": 250,
+  "time_step_ms": 100,
 
   "board": {"width": 14000, "height": 8000, "margin": 0},
 
@@ -44,8 +44,8 @@
   },
 
   "dkiz": {
-    "location": { "x": 16000, "y": 4000},
-    "speed":{ "magnitude": 50, "angle": 180 },
+    "location": { "x": 11000, "y": 5000},
+    "speed":{ "magnitude": 50, "angle": 200 },
     "shape":{
       "type": "circle",
       "circle": {"radius":  2000}
@@ -56,13 +56,13 @@
   "deployers": {
     "dkiz": {},
     "singularity": {
-      "location": { "x": 1000, "y": 4000 }
+      "location": { "x": 1000, "y": 3000 }
     }
   },
 
   "path_planners": {
     "random_walk": {},
-    "heuristic": {"offset_from_ends_dkiz_frontal_line": 400},
+    "heuristic": {"offset_from_ends_dkiz_frontal_line": 500},
     "dkiz": {},
     "straight_line": {"angle": 45}
   },
