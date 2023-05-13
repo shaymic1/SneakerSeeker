@@ -78,6 +78,7 @@ class Simulator:
                 if seeker.can_see(sneaker.location):
                     sneaker.state = Sneaker.State.DETECTED
         return any([s.state == Sneaker.State.DETECTED for s in still_unknown_sneakers])
+
     def __initialize_board(self):
         self.__deploy_players()
 
@@ -85,8 +86,10 @@ class Simulator:
         assignments = {}
         for sneaker in [s for s in self.sneakers if s.state == Sneaker.State.DETECTED]:
             seekers_time_for_collision: dict[Seeker, (Vec2D, float)] = {}
-            for seeker in [s for s in self.seekers if s.state == Seeker.State.SEEK]:
-                point, time = utils.calc_possible_collision_point_and_time(sneaker.location, sneaker.speed, seeker.location,
+            available_seekers = [s for s in self.seekers if s.state == Seeker.State.SEEK]
+            for seeker in available_seekers:
+                point, time = utils.calc_possible_collision_point_and_time(sneaker.location, sneaker.speed,
+                                                                           seeker.location,
                                                                            seeker.physical_specs.max_speed)
                 seekers_time_for_collision[seeker] = (point, time)
             fastest_seeker = min(seekers_time_for_collision, key=lambda k: seekers_time_for_collision[k][1])

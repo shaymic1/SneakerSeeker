@@ -11,6 +11,7 @@ from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.roi import ROI
 from sneaker_seeker.game_obj.dkiz import DKIZ
+from sneaker_seeker.common_types.destination import Destination
 
 
 def circle_dkiz_updater(dkiz_patch: matplotlib.patches, dkiz: DKIZ) -> None:
@@ -50,6 +51,7 @@ class Canvas(Visualizer):
         self.y_label = y_label
         self.object_appearance: dict = object_appearance
         self.objects: dict[int, CanvasObj] = {}
+        self.objects_pip: dict[int, Tuple[plt.Line2D, Destination]] = {}
         self.__init()
 
     @staticmethod
@@ -85,8 +87,8 @@ class Canvas(Visualizer):
                                               **appearance["line"])
         return wedge, triangle[0], line[0]
 
-    @staticmethod
-    def __update_player(player_canvas_obj: PlayerCanvasObj, player: Union[Sneaker, Seeker], appearance: dict) -> None:
+    def __update_player(self, player: Union[Sneaker, Seeker], appearance: dict) -> None:
+        player_canvas_obj: PlayerCanvasObj = self.objects[player.id]
         player_canvas_obj[0].set_center((player.location.x, player.location.y))
         player_canvas_obj[0].set_theta1(player.observation_direction - player.fov / 2)
         player_canvas_obj[0].set_theta2(player.observation_direction + player.fov / 2)
@@ -101,22 +103,47 @@ class Canvas(Visualizer):
         player_canvas_obj[2].set_color(appearance["line"]["color"])
         player_canvas_obj[2].set_alpha(appearance["line"]["alpha"])
 
-    def __print_player_to_canvas(self, player_canvas_obj: PlayerCanvasObj, player: Union[Sneaker, Seeker],
+    def __update_pip(self, player, appearance):
+        pip_obj, dst = self.objects_pip[player.id]
+        pip_obj.set_data([player.destination.location.x], [player.destination.location.y])
+        pip_obj.set_color(appearance["color"])
+        pip_obj.set_markersize(appearance["markersize"])
+        pip_obj.set_marker(appearance["marker"])
+
+    def __remove_pip(self, seeker):
+        pip_obj, dst = self.objects_pip.get(seeker.id)
+        pip_obj.set_data([0], [0])
+
+    def __create_pip(self, player, appearance):
+        pip_obj = self.ax.plot(player.destination.location.x, player.destination.location.y, **appearance)[0]
+        self.objects_pip[player.id] = (pip_obj, player.destination)
+
+    def __print_pip(self, player, appearance):
+        if player.destination and not player.destination.arrived:
+            if player.id not in self.objects_pip:
+                self.__create_pip(player=player, appearance=appearance)
+            else:
+                pip_obj, dst = self.objects_pip[player.id]
+                if dst != player.destination:
+                    self.__update_pip(player=player, appearance=appearance)
+        if player.destination and player.destination.arrived:
+            self.__remove_pip(player)
+
+    def __print_player_to_canvas(self, player: Union[Sneaker, Seeker],
                                  appearance: dict) -> None:
-        if player_canvas_obj is None:
+        if player.id not in self.objects:
             self.objects[player.id] = self.__make_player(player, appearance)
         else:
-            Canvas.__update_player(player_canvas_obj=player_canvas_obj, player=player, appearance=appearance)
+            self.__update_player(player=player, appearance=appearance)
 
     def make_seeker(self, seeker: Seeker) -> None:
-        seeker_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(seeker.id)
-        appearance = self.object_appearance["seeker"]
-        self.__print_player_to_canvas(seeker_canvas_obj, seeker, appearance)
+        appearance = self.object_appearance["seeker"][seeker.state.lower()]
+        self.__print_player_to_canvas(seeker, appearance)
+        self.__print_pip(player=seeker, appearance=appearance["pip"])
 
     def make_sneaker(self, sneaker: Sneaker) -> None:
-        sneaker_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(sneaker.id)
         appearance = self.object_appearance["sneaker"][sneaker.state.lower()]
-        self.__print_player_to_canvas(sneaker_canvas_obj, sneaker, appearance)
+        self.__print_player_to_canvas(sneaker, appearance)
 
     def make_ROI(self, roi: ROI) -> None:
         self.ax.add_patch(matplotlib.patches.Rectangle(xy=(roi.location.x, roi.location.y),
@@ -140,7 +167,3 @@ class Canvas(Visualizer):
         player_canvas_obj[0].remove()
         player_canvas_obj[1].remove()
         player_canvas_obj[2].remove()
-
-
-
-

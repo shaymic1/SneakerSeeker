@@ -44,6 +44,9 @@ class Vec2D:
     def __repr__(self) -> str:
         return repr((self.x, self.y))
 
+    def __hash__(self) -> int:
+        return hash((self.x, self.y))
+
     def __eq__(self, other: Vec2D) -> bool:
         if isinstance(other, Vec2D):
             return math.isclose(self.x, other.x, abs_tol=1e-10) and math.isclose(self.y, other.y, abs_tol=1e-10)
@@ -102,6 +105,11 @@ class Vec2D:
         return Vec2D(x=(self.x + other.x) / 2, y=(self.y + other.y) / 2)
 
     def points_between(self, other: Vec2D, num_points: int, offset_from_ends: float = 0) -> List[Vec2D]:
+        """ given 2 points, find the n-2 points inbetween the given points + the given points them self.
+            the return value is a list of equal distance points.
+
+            note: if n=1 the return value will be a single middle point."""
+
         if num_points == 1:
             return [self.middle_point(other)]
         angle = self.relative_angle(other, radian=True)

@@ -1,5 +1,5 @@
 {
-  "time_goal_ms": 270000,
+  "time_goal_ms": 170000,
   "time_step_ms": 200,
 
   "board": {"width": 14000, "height": 8000, "margin": 0},
@@ -11,7 +11,7 @@
   },
 
   "seeker": {
-    "num": 8,
+    "num": 20,
     "deployer": "singularity",
     "path_planner": "heuristic",
     "data": {
@@ -28,7 +28,7 @@
   },
 
   "sneaker": {
-    "num": 7,
+    "num": 20,
     "deployer": "dkiz",
     "path_planner": "dkiz",
     "data": {
@@ -44,7 +44,7 @@
   },
 
   "dkiz": {
-    "location": { "x": 16000, "y": 4000},
+    "location": { "x": 11000, "y": 4000},
     "speed":{ "magnitude": 50, "angle": 180 },
     "shape":{
       "type": "circle",

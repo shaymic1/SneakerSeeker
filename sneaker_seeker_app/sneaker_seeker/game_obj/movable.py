@@ -11,7 +11,7 @@ class Movable:
         self.id = Movable.last_id
         self.location: Vec2D = location
         self.speed: Vec2D = speed
-        self.destination = None
+        self.destination: Destination = None
 
     def __hash__(self):
         return self.id.__hash__()
@@ -23,7 +23,7 @@ class Movable:
         self.location += (self.speed * dt)
         if self.destination:
             self.destination.arrival_time -= dt
-            self.destination.arrived = (abs(self.destination.arrival_time) < dt)
+            self.destination.arrived = (self.destination.arrival_time < dt)
 
     def steer_to(self, location: Vec2D) -> None:
         self.speed.angle = utils.calc_angle(x=(location.x - self.location.x), y=(location.y - self.location.y))

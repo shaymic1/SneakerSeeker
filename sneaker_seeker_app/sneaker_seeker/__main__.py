@@ -63,17 +63,19 @@ def main(debug_input=None) -> None:
 
 
 if __name__ == "__main__":
-    debug = [
+    debug_args = [
         "--scenarios",
+        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\debug.json",
         # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\up_left.json",
-        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\enough_time.json",
+        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\enough_time.json",
         # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\middle.json",
         # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\come_from_above.json",
+        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\massive_attack.json",
         "--out_path", r"D:\output",
         "--scale_world_factor", "1",
         "--speed_up_video", "5",
-        "--save_frame_every_n_step", "1",
+        "--save_frame_every_n_step", "10",
         "--play_video",
         # "--keep_frames"
     ]
-    main(debug)
+    main(debug_args)
