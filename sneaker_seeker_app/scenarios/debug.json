@@ -1,6 +1,6 @@
 {
-  "time_goal_ms": 130000,
-  "time_step_ms": 200,
+  "time_goal_ms": 150000,
+  "time_step_ms": 100,
 
   "board": {"width": 14000, "height": 8000, "margin": 0},
 
@@ -11,36 +11,115 @@
   },
 
   "seeker": {
-    "num": 8,
-    "deployer": "singularity",
-    "path_planner": "heuristic",
-    "data": {
-      "los": 600,
-      "fov": 120,
-      "catch_dist": 50,
-      "physical_specs": {
-        "cruise_speed": 50,
-        "max_speed": 100,
-        "max_speed_time": 20,
-        "min_dist_between_eachother": 100
+    "groups": [
+      {
+        "num": 7,
+        "data": {
+          "los": 600,
+          "fov": 120,
+          "catch_dist": 50,
+          "physical_specs": {
+            "cruise_speed": 50,
+            "max_speed": 100,
+            "max_speed_time": 20,
+            "min_dist_between_eachother": 100
+          }
+        },
+        "deployer": {
+          "type": "singularity",
+          "data": {
+            "location": { "x": 3000, "y": 4000 }
+          }
+        },
+        "path_planner": {
+          "type":  "heuristic",
+          "data": {
+            "offset_from_ends_dkiz_frontal_line": 200,
+            "delay_launch_time": 0
+          }
+        }
+      },
+      {
+        "num": 7,
+        "data": {
+          "los": 600,
+          "fov": 120,
+          "catch_dist": 50,
+          "physical_specs": {
+            "cruise_speed": 50,
+            "max_speed": 100,
+            "max_speed_time": 20,
+            "min_dist_between_eachother": 100
+          }
+        },
+        "deployer": {
+          "type": "singularity",
+          "data": {
+            "location": { "x": 2000, "y": 4000 }
+          }
+        },
+        "path_planner": {
+          "type":  "heuristic",
+          "data": {
+            "offset_from_ends_dkiz_frontal_line": 200,
+            "delay_launch_time": 10000
+          }
+        }
+      },
+      {
+        "num": 7,
+        "data": {
+          "los": 600,
+          "fov": 120,
+          "catch_dist": 50,
+          "physical_specs": {
+            "cruise_speed": 50,
+            "max_speed": 100,
+            "max_speed_time": 20,
+            "min_dist_between_eachother": 100
+          }
+        },
+        "deployer": {
+          "type": "singularity",
+          "data": {
+            "location": { "x": 1000, "y": 4000 }
+          }
+        },
+        "path_planner": {
+          "type":  "heuristic",
+          "data": {
+            "offset_from_ends_dkiz_frontal_line": 200,
+            "delay_launch_time": 20000
+          }
+        }
       }
-    }
+    ]
   },
 
   "sneaker": {
-    "num": 7,
-    "deployer": "dkiz",
-    "path_planner": "dkiz",
-    "data": {
-      "los": 100,
-      "fov": 360,
-      "physical_specs": {
-        "cruise_speed": 50,
-        "max_speed": 50,
-        "max_speed_time": 0,
-        "min_dist_between_eachother": 300
+    "groups": [
+      {
+        "num": 21,
+        "data": {
+          "los": 100,
+          "fov": 360,
+          "physical_specs": {
+            "cruise_speed": 50,
+            "max_speed": 50,
+            "max_speed_time": 0,
+            "min_dist_between_eachother": 300
+          }
+        },
+        "path_planner": {
+          "type": "dkiz",
+          "data": { }
+        },
+        "deployer": {
+          "type": "dkiz",
+          "data": { }
+        }
       }
-    }
+    ]
   },
 
   "dkiz": {
@@ -48,23 +127,9 @@
     "speed":{ "magnitude": 50, "angle": 180 },
     "shape":{
       "type": "circle",
-      "circle": {"radius":  2000}
+      "circle": {"radius":  2400}
     },
-    "uncertainty_radius": 2000
-  },
-
-  "deployers": {
-    "dkiz": {},
-    "singularity": {
-      "location": { "x": 1000, "y": 4000 }
-    }
-  },
-
-  "path_planners": {
-    "random_walk": {},
-    "heuristic": {"offset_from_ends_dkiz_frontal_line": 400},
-    "dkiz": {},
-    "straight_line": {"angle": 45}
+    "uncertainty_radius": 2400
   },
 
   "canvas": {

@@ -19,7 +19,7 @@ def main(debug_input=None) -> None:
 
         vid_path = utils.make_video(
             frames_dir=out_path, frames_format=args["frames_format"], video_name=scenario_json_path.stem,
-            keep_frames=args["keep_frames"], video_format="mp4",
+            keep_frames=args["keep_frames"], video_format="avi",
             fps=(args["speed_up_video"] * utils.real_time_fps(scenario['time_step_ms'],
                                                               args["save_frame_every_n_step"]))
         )
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         "--out_path", r"D:\output",
         "--scale_world_factor", "1",
         "--speed_up_video", "2",
-        "--save_frame_every_n_step", "20",
+        "--save_frame_every_n_step", "10",
         "--play_video",
         # "--keep_frames"
     ]

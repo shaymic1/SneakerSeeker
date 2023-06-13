@@ -9,14 +9,19 @@ from sneaker_seeker.utilities import utils
 
 
 class PathPlannerHeuristic(PathPlanner):
-    def __init__(self, dkiz: DKIZ, roi: ROI, offset_from_ends_dkiz_frontal_line: float, **_ignore) -> None:
+    def __init__(self, dkiz: DKIZ, roi: ROI, offset_from_ends_dkiz_frontal_line: float,
+                 delay_launch_time: float, **_ignore) -> None:
         self.dkiz: DKIZ = dkiz
         self.roi: ROI = roi
         self.offset_from_ends_dkiz_frontal_line = offset_from_ends_dkiz_frontal_line
+        self.delay_launch_time: float = delay_launch_time
         self.player_finish_phase1: dict[float, bool] = {}
         self.should_set_first_path = True
 
-    def set_path(self, players: list[Union[Sneaker, Seeker]]) -> None:
+    def set_path(self, players: list[Union[Sneaker, Seeker]], time:float) -> None:
+        if time < self.delay_launch_time:
+            return
+
         if self.should_set_first_path:
             self.__set_destination_to_frontal_dkiz_line(players)
             self.player_finish_phase1 = {p: False for p in players}

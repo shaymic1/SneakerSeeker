@@ -1,5 +1,7 @@
+from sneaker_seeker.path_planner.path_planner import PathPlanner
 from sneaker_seeker.path_planner.path_planner_factory import PathPlannerFactory
 from sneaker_seeker.deployer.deployer_factory import DeployerFactory
+from sneaker_seeker.deployer.deployer import Deployer
 from sneaker_seeker.game_obj.seeker import Seeker
 from sneaker_seeker.game_obj.sneaker import Sneaker
 from sneaker_seeker.game_obj.dkiz import DKIZ
@@ -7,30 +9,70 @@ from sneaker_seeker.game_obj.roi import ROI
 from sneaker_seeker.visualization.canvas import Canvas
 
 
-def construct_scenario_objs(scenario) -> dict:
+def create_seekers_groups(scenario: dict) -> list[list[Seeker]]:
+    groups: list[list[Seeker]] = []
+    for group in scenario['seeker']['groups']:
+        groups.append([Seeker.from_dict(**group["data"]) for _ in range(group['num'])])
+    return groups
+
+
+def create_sneakers_groups(scenario: dict) -> list[list[Sneaker]]:
+    groups: list[list[Sneaker]] = []
+    for group in scenario['sneaker']['groups']:
+        groups.append([Sneaker.from_dict(**group["data"]) for _ in range(group['num'])])
+    return groups
+
+
+def create_seekers_deployers(scenario: dict, **game_objs) -> list[Deployer]:
+    deployers: list[Deployer] = []
+    for group in scenario['seeker']['groups']:
+        deployers.append(
+            DeployerFactory.create(group["deployer"]["type"], **group["deployer"]["data"], **game_objs)
+        )
+    return deployers
+
+
+def create_seekers_path_planners(scenario: dict, **game_objs) -> list[PathPlanner]:
+    path_planners: list[PathPlanner] = []
+    for group in scenario['seeker']['groups']:
+        path_planners.append(
+            PathPlannerFactory.create(group["path_planner"]["type"], **group["path_planner"]["data"], **game_objs))
+    return path_planners
+
+
+def create_sneakers_deployers(scenario: dict, **game_objs) -> list[Deployer]:
+    deployers: list[Deployer] = []
+    for group in scenario['sneaker']['groups']:
+        deployers.append(
+            DeployerFactory.create(group["deployer"]["type"], **group["deployer"]["data"], **game_objs)
+        )
+    return deployers
+
+
+def create_sneakers_path_planner(scenario: dict, **game_objs) -> list[PathPlanner]:
+    path_planners: list[PathPlanner] = []
+    for group in scenario['sneaker']['groups']:
+        path_planners.append(
+            PathPlannerFactory.create(group["path_planner"]["type"], **group["path_planner"]["data"], **game_objs))
+    return path_planners
+
+
+def construct_scenario_objs(scenario: dict) -> dict:
     game_objects = {
         "roi": ROI.from_dict(**scenario["ROI"]),  # Region Of Interest of the game of seeking
         "dkiz": DKIZ.from_dict(**scenario["dkiz"]),
         "visualizer": Canvas(**scenario["board"], **scenario["canvas"]),
-        "sneakers": [Sneaker.from_dict(**scenario["sneaker"]["data"]) for _ in range(scenario["sneaker"]["num"])],
-        "seekers": [Seeker.from_dict(**scenario["seeker"]["data"]) for _ in range(scenario["seeker"]["num"])]
+        "sneakers": create_sneakers_groups(scenario),
+        "seekers": create_seekers_groups(scenario)
     }
 
-    sneaker_deployer_type = scenario["sneaker"]["deployer"]
-    seeker_deployer_type = scenario["seeker"]["deployer"]
     game_objects["deployers"] = {
-        Seeker: DeployerFactory.create(
-            seeker_deployer_type, **scenario["deployers"][seeker_deployer_type], **game_objects),
-        Sneaker: DeployerFactory.create(
-            sneaker_deployer_type, **scenario["deployers"][sneaker_deployer_type], **game_objects)
+        Seeker: create_seekers_deployers(scenario, **game_objects),
+        Sneaker: create_sneakers_deployers(scenario, **game_objects)
+    }
+    game_objects["path_planners"] = {
+        Seeker: create_seekers_path_planners(scenario, **game_objects),
+        Sneaker: create_sneakers_path_planner(scenario, **game_objects)
     }
 
-    sneaker_path_planner_type = scenario["sneaker"]["path_planner"]
-    seeker_path_planner_type = scenario["seeker"]["path_planner"]
-    game_objects["path_planners"] = {
-        Seeker: PathPlannerFactory.create(
-            seeker_path_planner_type, **scenario["path_planners"][seeker_path_planner_type], **game_objects),
-        Sneaker: PathPlannerFactory.create(
-            sneaker_path_planner_type, **scenario["path_planners"][sneaker_path_planner_type], **game_objects)
-    }
     return game_objects
