@@ -42,7 +42,7 @@ class Simulator:
             seeker.advance(dt)
 
     def __visualize_board(self, curr_time: float) -> None:
-        self.visualizer.time_stamp(curr_time)
+        self.visualizer.parameters_stamp(curr_time, len(self.seekers), len(self.sneakers))
         self.visualizer.make_ROI(self.roi)
         self.visualizer.make_DKIZ(self.dkiz)
         for seeker in self.seekers:

@@ -27,7 +27,7 @@ class Visualizer(ABC):
     def make_sneaker(self, sneaker: Sneaker) -> None:
         pass
 
-    def time_stamp(self, curr_time) -> None:
+    def parameters_stamp(self, curr_time, num_seekers: int, num_sneakers: int) -> None:
         pass
 
     def remove_player(self, seeker) -> None:

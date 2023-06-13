@@ -1,9 +1,11 @@
 from pathlib import Path
 from typing import Union, Tuple, Optional
+from dataclasses import dataclass
 
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
+from matplotlib.text import Text
 
 from sneaker_seeker.game_obj.player import Player
 from sneaker_seeker.visualization.visualizer import Visualizer
@@ -36,6 +38,13 @@ CanvasObj = Union[PlayerCanvasObj, DKIZCanvasObj, ROICanvasObj]
 
 
 class Canvas(Visualizer):
+    @dataclass
+    class Texts:
+        title: Text
+        seeker_num: Text
+        sneaker_num: Text
+        scenario_time: Text
+
     __dkiz_shape_creator: dict[str, callable] = {"circle": circle_dkiz_creator}
     __dkiz_shape_updater: dict[str, callable] = {"circle": circle_dkiz_updater}
 
@@ -52,22 +61,27 @@ class Canvas(Visualizer):
         self.object_appearance: dict = object_appearance
         self.objects: dict[int, CanvasObj] = {}
         self.objects_pip: dict[int, Tuple[plt.Line2D, Destination]] = {}
-        self.__init()
+        self.texts = self.__init()
 
     @staticmethod
     def __make_fig(width: int, height: int) -> Union[any, plt.Axes]:
         fig = plt.figure(figsize=(width, height))
         return fig, fig.add_subplot(1, 1, 1)
 
-    def __init(self) -> None:
+    def __init(self) -> Texts:
         self.ax.cla()
-        self.fig.suptitle(self.name)
         self.ax.set_aspect('equal')
         self.ax.set_xlabel(self.x_label)
         self.ax.set_ylabel(self.y_label)
         self.ax.set_xlim([-self.margin, self.width + self.margin])
         self.ax.set_ylim([-self.margin, self.height + self.margin])
         self.ax.set_aspect("auto", adjustable="box", anchor="C")
+        return Canvas.Texts(
+            title=self.ax.text(self.width * 0.5, self.height * 1.1, self.name, ha='center', fontsize=20),
+            seeker_num=self.ax.text(self.width * 0.05, self.height * 1.03, f"Seekers: ", color="blue", fontsize=20),
+            sneaker_num=self.ax.text(self.width * 0.8, self.height * 1.03, f"Sneaker: ", color="red", fontsize=20),
+            scenario_time=self.ax.text(self.width * 0.5, self.height * 1.03, f"Time[sec]: ", fontsize=15, ha='center')
+        )
 
     def save(self, path: Path) -> None:
         self.fig.savefig(f"{path}.{self.frame_format}",
@@ -159,8 +173,10 @@ class Canvas(Visualizer):
         else:  # update existing object
             Canvas.__dkiz_shape_updater[dkiz.type](dkiz_canvas_obj, dkiz)
 
-    def time_stamp(self, curr_time) -> None:
-        self.ax.set_title(f"time[sec]: {curr_time / 1000:.1f}")
+    def parameters_stamp(self, curr_time, num_seekers: int, num_sneakers: int) -> None:
+        self.texts.scenario_time.set_text(f"time[sec]: {curr_time / 1000:.1f}")
+        self.texts.seeker_num.set_text(f"Seekers: {num_seekers}")
+        self.texts.sneaker_num.set_text(f"Sneakers: {num_sneakers}")
 
     def remove_player(self, player: Player) -> None:
         player_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(player.id)
