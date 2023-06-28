@@ -8,7 +8,7 @@ import json
 
 import colorama
 import cv2
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 
 from sneaker_seeker.common_types.vec2d import Vec2D
 from sneaker_seeker.game_obj.roi import ROI
@@ -160,7 +160,7 @@ def __aim_ahead(dist: Vec2D, relative_speed_vec: Vec2D, friendly_speed_magnitude
     b = 2 * (relative_speed_vec.x * dist.x + relative_speed_vec.y * dist.y)
     c = (dist.x ** 2 + dist.y ** 2)
     desc = b ** 2 - 4 * a * c
-    if desc < 0:  # If the discriminant is negative, then there is no solution
+    if desc < 0 or (math.sqrt(desc) - b) == 0:  # If the discriminant is negative, then there is no solution
         return None
     return (2 * c) / (math.sqrt(desc) - b)
 
@@ -183,3 +183,17 @@ def point_in_roi(point: Vec2D, roi: ROI):
     x2, y2 = x1 + roi.width, y1 + roi.height
     x, y = point.x, point.y
     return x1 <= x <= x2 and y1 <= y <= y2
+
+
+def flat(list_of_list: list[list[Any]]) -> list[Any]:
+    return [e for inner_list in list_of_list for e in inner_list]
+
+
+def ll_count(ll: list[list[Any]]) -> int:
+    return sum(len(s) for s in ll)
+
+
+def remove_from_list_of_list(list_of_list: list[list[Any]], element):
+    for inner_list in list_of_list:
+        if element in inner_list:
+            inner_list.remove(element)

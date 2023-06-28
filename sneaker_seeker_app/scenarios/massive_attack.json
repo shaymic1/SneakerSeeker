@@ -34,7 +34,8 @@
         "path_planner": {
           "type":  "heuristic",
           "data": {
-            "offset_from_ends_dkiz_frontal_line": 400
+            "offset_from_ends_dkiz_frontal_line": 400,
+            "delay_launch_time": 0
           }
         }
       }

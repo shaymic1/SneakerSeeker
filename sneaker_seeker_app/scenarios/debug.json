@@ -123,7 +123,7 @@
   },
 
   "dkiz": {
-    "location": { "x": 11000, "y": 4000},
+    "location": { "x": 11000, "y": 3500},
     "speed":{ "magnitude": 50, "angle": 180 },
     "shape":{
       "type": "circle",

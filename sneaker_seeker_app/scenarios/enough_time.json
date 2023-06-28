@@ -22,7 +22,8 @@
             "cruise_speed": 50,
             "max_speed": 100,
             "max_speed_time": 20,
-            "min_dist_between_eachother": 100
+            "min_dist_between_eachother": 100,
+            "delay_launch_time": 0
           }
         },
         "deployer": {
@@ -34,7 +35,8 @@
         "path_planner": {
           "type":  "heuristic",
           "data": {
-            "offset_from_ends_dkiz_frontal_line": 400
+            "offset_from_ends_dkiz_frontal_line": 400,
+            "delay_launch_time": 0
           }
         }
       }

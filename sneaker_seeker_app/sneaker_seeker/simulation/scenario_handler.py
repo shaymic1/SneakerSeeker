@@ -57,11 +57,11 @@ def create_sneakers_path_planner(scenario: dict, **game_objs) -> list[PathPlanne
     return path_planners
 
 
-def construct_scenario_objs(scenario: dict) -> dict:
+def construct_scenario_objs(scenario: dict, visualizer_on: bool = True) -> dict:
     game_objects = {
         "roi": ROI.from_dict(**scenario["ROI"]),  # Region Of Interest of the game of seeking
         "dkiz": DKIZ.from_dict(**scenario["dkiz"]),
-        "visualizer": Canvas(**scenario["board"], **scenario["canvas"]),
+        "visualizer": Canvas(**scenario["board"], **scenario["canvas"]) if visualizer_on else None,
         "sneakers": create_sneakers_groups(scenario),
         "seekers": create_seekers_groups(scenario)
     }
