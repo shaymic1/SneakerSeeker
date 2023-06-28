@@ -175,8 +175,8 @@ class Canvas(Visualizer):
 
     def parameters_stamp(self, curr_time, num_seekers: int, num_sneakers: int) -> None:
         self.texts.scenario_time.set_text(f"time[sec]: {curr_time / 1000:.1f}")
-        self.texts.seeker_num.set_text(f"Seekers: {num_seekers}")
-        self.texts.sneaker_num.set_text(f"Sneakers: {num_sneakers}")
+        self.texts.seeker_num.set_text(f"Seekers (friendly): {num_seekers}")
+        self.texts.sneaker_num.set_text(f"Sneakers (rivals): {num_sneakers}")
 
     def remove_player(self, player: Player) -> None:
         player_canvas_obj: Optional[PlayerCanvasObj] = self.objects.get(player.id)

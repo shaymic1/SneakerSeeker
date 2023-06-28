@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from sneaker_seeker.utilities import utils
 from sneaker_seeker.common_types.vec2d import Vec2D
 from sneaker_seeker.common_types.destination import Destination
@@ -36,5 +38,11 @@ class Movable:
             arrival_time = self.location.distance_to(dst) / self.speed.magnitude
         self.destination = Destination(location=dst, arrival_time=arrival_time)
 
-    def stop(self) -> None:
+    def halt(self) -> None:
         self.speed.magnitude = 0.01
+
+    def is_getting_closer(self, other: Movable) -> bool:
+        rel_speed = other.speed - self.speed
+        rel_location = other.location - self.location
+
+        return rel_speed.dot(rel_location) < 0 and rel_speed.magnitude > 0 and rel_location.magnitude > 0

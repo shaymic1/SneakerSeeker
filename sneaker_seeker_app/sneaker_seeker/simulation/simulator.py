@@ -101,12 +101,11 @@ class Simulator:
         assignments = {}
         for sneaker in [s for s in utils.flat(self.sneakers) if s.state == Sneaker.State.DETECTED]:
             seekers_time_for_collision: dict[Seeker, (Vec2D, float)] = {}
-            available_seekers = [s for s in utils.flat(self.seekers) if s.state == Seeker.State.SEEK]
-            for seeker in available_seekers:
-                if result := utils.calc_possible_collision_point_and_time(sneaker.location, sneaker.speed,
-                                                                          seeker.location,
-                                                                          seeker.physical_specs.max_speed):
-                    point, time = result
+            for seeker in self.available_seekers():
+                if possible_result := utils.calc_possible_collision_point_and_time(sneaker.location, sneaker.speed,
+                                                                                  seeker.location,
+                                                                                  seeker.physical_specs.max_speed):
+                    point, time = possible_result
                     if point.x > 0 and point.y > 0:
                         seekers_time_for_collision[seeker] = (point, time)
 
@@ -141,3 +140,6 @@ class Simulator:
             seeker.set_destination(dst=point, new_speed=seeker.physical_specs.max_speed, arrival_time=time)
             seeker.state = Seeker.State.CATCH
             sneaker.state = Sneaker.State.TARGETED
+
+    def available_seekers(self) -> list[Seeker]:
+        return [s for s in utils.flat(self.seekers) if s.state != Seeker.State.CATCH]

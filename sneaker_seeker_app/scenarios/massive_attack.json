@@ -1,5 +1,5 @@
 {
-  "time_goal_ms": 170000,
+  "time_goal_ms": 190000,
   "time_step_ms": 100,
 
   "board": {"width": 14000, "height": 8000, "margin": 0},
@@ -87,6 +87,16 @@
     "object_appearance": {
 
       "sneaker": {
+        "move": {
+          "wedge": {"facecolor": "red", "alpha": 0.1},
+          "triangle": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6},
+          "line": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6}
+        },
+        "halt": {
+          "wedge": {"facecolor": "red", "alpha": 0.1},
+          "triangle": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6},
+          "line": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6}
+        },
         "undetected": {
           "wedge": {"facecolor": "red", "alpha": 0.1},
           "triangle": {"color": "red", "markersize": 10, "markerfacecolor": "red", "alpha": 0.6},
@@ -105,17 +115,35 @@
       },
 
       "seeker": {
+        "move": {
+          "wedge": {"facecolor": "blue", "alpha": 0.1},
+          "triangle": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.3},
+          "line": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.3},
+          "pip": {"color": "blue", "markersize": 1, "marker": "o"}
+        },
+        "halt": {
+          "wedge": {"facecolor": "blue", "alpha": 0.1},
+          "triangle": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.3},
+          "line": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.3},
+          "pip": {"color": "blue", "markersize": 1, "marker": "o"}
+        },
         "seek": {
           "wedge": {"facecolor": "blue", "alpha": 0.1},
-          "triangle": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.6},
-          "line": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.6},
+          "triangle": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.3},
+          "line": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.3},
           "pip": {"color": "blue", "markersize": 1, "marker": "o"}
         },
         "catch": {
-          "wedge": {"facecolor": "blue", "alpha": 0.1},
-          "triangle": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.6},
-          "line": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.6},
+          "wedge": {"facecolor": "blue", "alpha": 0.25},
+          "triangle": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.9},
+          "line": {"color": "blue", "markersize": 10, "markerfacecolor": "blue", "alpha": 0.9},
           "pip": {"color": "red", "markersize": 10, "marker": "x"}
+        },
+        "back_to_base": {
+          "wedge": {"facecolor": "black", "alpha": 0.1},
+          "triangle": {"color": "black", "markersize": 10, "markerfacecolor": "black", "alpha": 0.9},
+          "line": {"color": "black", "markersize": 10, "markerfacecolor": "black", "alpha": 0.9},
+          "pip": {"color": "black", "markersize": 10, "marker": "x"}
         }
       },
 
@@ -127,6 +155,7 @@
       }
     }
   }
+
 
 }
 

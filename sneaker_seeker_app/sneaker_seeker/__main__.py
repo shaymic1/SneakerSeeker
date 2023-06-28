@@ -31,18 +31,15 @@ if __name__ == "__main__":
     debug_args = [
         "--scenarios",
         # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\debug.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\statistics\front_wave.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\statistics\front_no_wave.json",
-        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\statistics\front_no_burst.json",
         # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\up_left.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\enough_time.json",
+        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\enough_time.json",
         # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\middle.json",
         # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\come_from_above.json",
         # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\massive_attack.json",
         "--out_path", r"D:\output",
         "--scale_world_factor", "1",
         "--speed_up_video", "5",
-        "--save_frame_every_n_step", "5",
+        "--save_frame_every_n_step", "1",
         "--play_video",
         # "--keep_frames"
     ]

@@ -8,8 +8,11 @@ from sneaker_seeker.common_types.vec2d import Vec2D
 
 class Seeker(Player):
     class State(StrEnum):
+        MOVE = auto()
+        HALT = auto()
         SEEK = auto()
         CATCH = auto()
+        BACK_TO_BASE = auto()
 
     def __init__(self, physical_specs: PhysicalSpecs, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D(),
                  los: float = 100, fov: float = 180, catch_dist: float = 50,
@@ -17,7 +20,7 @@ class Seeker(Player):
         super().__init__(physical_specs=physical_specs, location=location, speed=speed, los=los, fov=fov,
                          observation_direction=observation_direction)
         self.catch_dist = catch_dist
-        self.state = Seeker.State.SEEK
+        self._state = Seeker.State.SEEK
 
     @classmethod
     def from_dict(cls, physical_specs: dict, location: dict = None, speed: dict = None,
@@ -29,6 +32,16 @@ class Seeker(Player):
         obser_dir = observation_direction if observation_direction else spd.angle
         return cls(physical_specs=specs, location=loc, speed=spd, los=los, fov=fov, catch_dist=catch_dist,
                    observation_direction=obser_dir)
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, new_state: Seeker.State):
+        # if self._state == Seeker.State.HALT:
+        #     self.speed.magnitude = self.physical_specs.cruise_speed
+        self._state = new_state
 
     def can_see(self, location: Vec2D) -> bool:
         if self.location.distance_to(location) > self.los:
