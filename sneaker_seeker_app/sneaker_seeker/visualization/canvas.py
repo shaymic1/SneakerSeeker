@@ -31,6 +31,23 @@ def circle_dkiz_creator(ax: plt.Axes, dkiz: DKIZ, appearance: dict) -> Tuple[mat
     return circle, line[0]
 
 
+def rectangle_dkiz_updater(dkiz_patch: matplotlib.patches, dkiz: DKIZ) -> None:
+    dkiz_patch[0].set_xy((dkiz.location.x, dkiz.location.y))
+    dkiz_patch[1].set_data([dkiz.l_frontal_line.location.x, dkiz.r_frontal_line.location.x],
+                           [dkiz.l_frontal_line.location.y, dkiz.r_frontal_line.location.y])
+
+
+def rectangle_dkiz_creator(ax: plt.Axes, dkiz: DKIZ, appearance: dict) -> Tuple[matplotlib.patches.Rectangle, plt.Line2D]:
+    rectangle = ax.add_patch(matplotlib.patches.Rectangle(xy=(dkiz.location.x, dkiz.location.y),
+                                                          width=dkiz.dimensions["width"],
+                                                          height=dkiz.dimensions["height"],
+                                                          **appearance["inner_circle"]))
+    line_x_data = [dkiz.l_frontal_line.location.x, dkiz.r_frontal_line.location.x]
+    line_y_data = [dkiz.l_frontal_line.location.y, dkiz.r_frontal_line.location.y]
+    line: list[plt.Line2D] = ax.plot(line_x_data, line_y_data, **appearance["frontal_line"])
+    return rectangle, line[0]
+
+
 PlayerCanvasObj = Tuple[matplotlib.patches.Wedge, plt.Line2D, plt.Line2D]
 DKIZCanvasObj = Tuple[Union[matplotlib.patches.Circle, any], plt.Line2D]
 ROICanvasObj = matplotlib.patches.Rectangle
@@ -45,8 +62,8 @@ class Canvas(Visualizer):
         sneaker_num: Text
         scenario_time: Text
 
-    __dkiz_shape_creator: dict[str, callable] = {"circle": circle_dkiz_creator}
-    __dkiz_shape_updater: dict[str, callable] = {"circle": circle_dkiz_updater}
+    __dkiz_shape_creator: dict[str, callable] = {"circle": circle_dkiz_creator, "rectangle": rectangle_dkiz_creator}
+    __dkiz_shape_updater: dict[str, callable] = {"circle": circle_dkiz_updater, "rectangle": rectangle_dkiz_updater}
 
     def __init__(self, height: int, width: int, margin: int, name: str, x_label: str, y_label: str, fig_size: dict,
                  object_appearance: dict, frame_format: str = "jpg") -> None:

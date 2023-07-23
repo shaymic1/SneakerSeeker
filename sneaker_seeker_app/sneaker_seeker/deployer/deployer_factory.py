@@ -1,10 +1,15 @@
 from sneaker_seeker.deployer.deployer import Deployer
 from sneaker_seeker.deployer.deployer_dkiz import DeployerDKIZ
 from sneaker_seeker.deployer.deployer_singularity import DeployerSingularity
+from sneaker_seeker.deployer.deployer_line import DeployerLine
+from sneaker_seeker.deployer.deployer_triangle import DeployerTriangle
+
 
 class DeployerFactory:
     __deployers = {"dkiz": DeployerDKIZ,
-                   "singularity": DeployerSingularity}
+                   "singularity": DeployerSingularity,
+                   "triangle": DeployerTriangle,
+                   "line": DeployerLine}
 
     @staticmethod
     def create(deployer_type: str, **kwargs) -> Deployer:

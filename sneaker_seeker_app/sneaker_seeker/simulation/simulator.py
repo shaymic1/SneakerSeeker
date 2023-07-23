@@ -24,9 +24,12 @@ class Simulator:
         self.roi: ROI = roi
         self.dkiz: DKIZ = dkiz
         self.seekers: list[list[Seeker]] = seekers
-        self.sneakers: list[list[Sneaker]] = sneakers
+        self.sneakers: list[(int, list[Sneaker])] = sneakers
+        self.seekers_group_num = [s.group_num for s in utils.flat(seekers)]
+        self.sneakers_group_num = [s.group_num for s in utils.flat(sneakers)]
         self.results: Results = Results(seeker_start=utils.ll_count(self.seekers),
                                         sneaker_start=utils.ll_count(self.sneakers))
+        self.last_group_detection_idx = -1
         self.keep_running = True
         self.visulizer_on = True
 
@@ -37,10 +40,10 @@ class Simulator:
             self.deployers[Sneaker][i].deploy(sneaker_group)
 
     def __set_players_next_location(self, curr_time):
-        for i, seeker_group in enumerate(self.seekers):
-            self.path_planners[Seeker][i].set_path(seeker_group, curr_time)
-        for i, sneaker_group in enumerate(self.sneakers):
-            self.path_planners[Sneaker][i].set_path(sneaker_group, curr_time)
+        for i, (group_num, seeker_group) in enumerate(zip(self.seekers_group_num, self.seekers)):
+            self.path_planners[Seeker][i].set_path(seeker_group, curr_time, self.should_launch(group_num))
+        for i, (group_num, sneaker_group) in enumerate(zip(self.sneakers_group_num, self.sneakers)):
+            self.path_planners[Sneaker][i].set_path(sneaker_group, curr_time, self.should_launch(group_num))
 
     def __advance_objects(self, dt: float):
         self.dkiz.advance(dt)
@@ -87,24 +90,30 @@ class Simulator:
         return self.results
 
     def __is_new_detection_found(self) -> bool:
-        still_unknown_sneakers = [s for s in utils.flat(self.sneakers) if s.state == Sneaker.State.UNDETECTED]
-        for sneaker in still_unknown_sneakers:
-            for seeker in utils.flat(self.seekers):
-                if seeker.can_see(sneaker.location):
-                    sneaker.state = Sneaker.State.DETECTED
-        return any([s.state == Sneaker.State.DETECTED for s in still_unknown_sneakers])
+        rv = False
+        for group_num, seeker_group in zip(self.seekers_group_num, self.seekers):
+            for sneaker in self.__still_unknown_sneakers_for_this_group(group_num):
+                for seeker in seeker_group:
+                    if seeker.can_see(sneaker.location):
+                        sneaker.state = Sneaker.State.DETECTED
+                        sneaker.detected_by_seekers_group_numbers.append(group_num)
+                        self.last_group_detection_idx = max(group_num, self.last_group_detection_idx)
+                        self.first_detection = True
+                        rv = True
+        return rv
 
     def __initialize_board(self):
         self.__deploy_players()
 
     def __best_assignments(self) -> Optional[dict[Seeker, Tuple[Sneaker, Vec2D, float]]]:
         assignments = {}
-        for sneaker in [s for s in utils.flat(self.sneakers) if s.state == Sneaker.State.DETECTED]:
+        detected_sneakers = [s for s in utils.flat(self.sneakers) if s.state == Sneaker.State.DETECTED]
+        for sneaker in detected_sneakers:
             seekers_time_for_collision: dict[Seeker, (Vec2D, float)] = {}
-            for seeker in self.available_seekers():
+            for seeker in self.__available_seekers(sneaker.detected_by_seekers_group_numbers):
                 if possible_result := utils.calc_possible_collision_point_and_time(sneaker.location, sneaker.speed,
-                                                                                  seeker.location,
-                                                                                  seeker.physical_specs.max_speed):
+                                                                                   seeker.location,
+                                                                                   seeker.physical_specs.max_speed):
                     point, time = possible_result
                     if point.x > 0 and point.y > 0:
                         seekers_time_for_collision[seeker] = (point, time)
@@ -137,9 +146,25 @@ class Simulator:
     @staticmethod
     def __set_assignments(assignments: dict[Seeker, Tuple[Sneaker, Vec2D, float]]):
         for seeker, (sneaker, point, time) in assignments.items():
-            seeker.set_destination(dst=point, new_speed=seeker.physical_specs.max_speed, arrival_time=time)
             seeker.state = Seeker.State.CATCH
             sneaker.state = Sneaker.State.TARGETED
+            seeker.set_destination(dst=point, new_speed=seeker.physical_specs.max_speed, arrival_time=time)
 
-    def available_seekers(self) -> list[Seeker]:
-        return [s for s in utils.flat(self.seekers) if s.state != Seeker.State.CATCH]
+    def __available_seekers(self, possible_seeker_group_nums: list[int]) -> list[Seeker]:
+        available_seekers = []
+        for group_num, seeker_group in zip(self.seekers_group_num, self.seekers):
+            if group_num in possible_seeker_group_nums:
+                available_seekers.extend([s for s in seeker_group if s.state != Seeker.State.CATCH])
+        return available_seekers
+
+    def __still_unknown_sneakers_for_this_group(self, seeker_group_num) -> list[Sneaker]:
+        still_unknown_sneakers = []
+        for sneaker_group in self.sneakers:
+            for sneaker in sneaker_group:
+                if seeker_group_num not in sneaker.detected_by_seekers_group_numbers:
+                    still_unknown_sneakers.append(sneaker)
+        return still_unknown_sneakers
+
+    def should_launch(self, group_num):
+        is_my_front_group_detected_something = group_num - 1 <= self.last_group_detection_idx
+        return is_my_front_group_detected_something

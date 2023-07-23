@@ -3,6 +3,7 @@ import math
 import numpy as np
 from typing import Tuple, Optional
 
+from sneaker_seeker.utilities import utils
 from sneaker_seeker.common_types.vec2d import Vec2D
 from sneaker_seeker.common_types.point import Point
 from .movable import Movable
@@ -36,6 +37,9 @@ class DKIZ(Movable):
     def contains(self, other_location: Vec2D):
         if self.type == 'circle':
             return self.location.distance_to(other_location) < self.dimensions['radius']
+        if self.type == 'rectangle':
+            return utils.point_in_rectangle(other_location, self.location.x, self.location.y,
+                                            self.dimensions['width'], self.dimensions['height'])
 
     def generate_points_inside(self, num_of_points: int, min_dist_between: float) -> list[Vec2D]:
         chosen_points = []

@@ -1,5 +1,5 @@
 {
-  "time_goal_ms": 260000,
+  "time_goal_ms": 190000,
   "time_step_ms": 100,
 
   "board": {"width": 14000, "height": 8000, "margin": 0},
@@ -108,7 +108,7 @@
     "speed":{ "magnitude": 50, "angle": 180 },
     "shape":{
       "type": "circle",
-      "circle": {"radius":  500},
+      "circle": {"radius":  2100},
       "rectangle": {"width": 6000, "height": 100 }
     },
     "uncertainty_radius": 2400
@@ -192,8 +192,8 @@
       "roi": { "linewidth": 2, "edgecolor": "green", "facecolor": "none" },
 
       "dkiz": {
-        "inner_circle": {"linewidth": 0.5, "edgecolor": "red", "facecolor": "none", "alpha": 0.5},
-        "frontal_line": {"alpha": 1}
+        "inner_circle": {"linewidth": 0.5, "edgecolor": "red", "facecolor": "none", "alpha": 0},
+        "frontal_line": {"alpha": 0}
       }
     }
   }

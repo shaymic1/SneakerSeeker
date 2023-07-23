@@ -185,6 +185,12 @@ def point_in_roi(point: Vec2D, roi: ROI):
     return x1 <= x <= x2 and y1 <= y <= y2
 
 
+def point_in_rectangle(point: Vec2D, x1: float, y1: float, width: float, height: float):
+    x2, y2 = x1 + width, y1 + height
+    x, y = point.x, point.y
+    return x1 <= x <= x2 and y1 <= y <= y2
+
+
 def flat(list_of_list: list[list[Any]]) -> list[Any]:
     return [e for inner_list in list_of_list for e in inner_list]
 

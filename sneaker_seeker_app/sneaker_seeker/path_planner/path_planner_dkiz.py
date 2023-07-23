@@ -9,7 +9,7 @@ class PathPlannerDKIZ(PathPlanner):
         self.dkiz: DKIZ = dkiz
         self.tracked_players = {}
 
-    def set_path(self, players: list[Player], time: float) -> None:
+    def set_path(self, players: list[Player], time: float, has_detection: bool) -> None:
         # set the player's speed only once using tracked_players dict.
         for player in players:
             if player.id not in self.tracked_players.keys():

@@ -5,13 +5,14 @@ from sneaker_seeker.common_types.vec2d import Vec2D
 
 class Player(Movable):
 
-    def __init__(self, physical_specs: PhysicalSpecs, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D(),
+    def __init__(self, physical_specs: PhysicalSpecs, group_num: int, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D(),
                  los: float = 100, fov: float = 180, observation_direction: float = None) -> None:
         super().__init__(location, speed)
         self.physical_specs: PhysicalSpecs = physical_specs
         self.observation_direction: float = observation_direction
         self.los: float = los
         self.fov: float = fov
+        self.group_num: int = group_num
 
     def set_destination(self, dst: Vec2D, new_speed: float = None, arrival_time: float = None,
                         observation_direction: float = None) -> None:
@@ -20,3 +21,4 @@ class Player(Movable):
 
     def observe_to_location(self, trgt: Vec2D):
         self.observation_direction = self.location.relative_angle(trgt)
+
