@@ -3,6 +3,7 @@
 *.avi
 *.bkp
 *.prof
+*.pptx
 
 indoor_HnS/
 app/.idea/
@@ -14,3 +15,4 @@ sneaker_seeker_app/SneakerSeeker.egg-info/
 *.pickle
 *.pptx
 *.gif
+SSvideos/
