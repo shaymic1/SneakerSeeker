@@ -48,6 +48,9 @@ class Seeker(Player):
             self.sway_mid_axis = self.observation_direction
         else:
             self.observation_direction = self.sway_mid_axis
+
+        # if new_state == Seeker.State.CATCH:
+        #     self.fov = 40
         self._state = new_state
 
     def can_see(self, location: Vec2D) -> bool:

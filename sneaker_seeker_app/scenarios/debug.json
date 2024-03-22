@@ -35,8 +35,9 @@
           }
         },
         "path_planner": {
-          "type":  "heuristic",
+          "type":  "straight_line",
           "data": {
+            "angle": 30,
             "offset_from_ends_dkiz_frontal_line": 200,
             "delay_launch_time": 0
           }
@@ -65,11 +66,12 @@
           }
         },
         "path_planner": {
-          "type":  "heuristic",
+          "type":  "straight_line",
           "data": {
+            "angle": 30,
             "offset_from_ends_dkiz_frontal_line": 200,
             "delay_launch_time": 0,
-            "delay_launch_detection": true
+            "delay_launch_detection": false
           }
         }
       }

@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 from sneaker_seeker.utilities import utils
 from sneaker_seeker.simulation.simulator import Simulator
@@ -28,21 +29,24 @@ def main(debug_input=None) -> None:
 
 
 if __name__ == "__main__":
+    user_name = os.getenv("USERNAME")
+    drive_name = "OneDrive" if user_name == "shali" else "OneDrive - Rafael"
+
     debug_args = [
         "--scenarios",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\2100m_radius_circle.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\750m_radius_circle.json",
-        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\line.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\debug.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\up_left.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\enough_time.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\middle.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\come_from_above.json",
-        # r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\massive_attack.json",
+        # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\2100m_radius_circle.json",
+        # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\750m_radius_circle.json",
+        # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\750m_radius_circle.json",
+        fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\debug.json",
+        # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\up_left.json",
+        # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\enough_time.json",
+        # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\middle.json",
+        # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\come_from_above.json",
+        # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\massive_attack.json",
         "--out_path", r"D:\output",
         "--scale_world_factor", "1",
         "--speed_up_video", "5",
-        "--save_frame_every_n_step", "2",
+        "--save_frame_every_n_step", "20",
         "--play_video",
         # "--keep_frames"
     ]
