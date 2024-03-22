@@ -51,5 +51,4 @@ class Movable:
     def is_getting_closer(self, other: Movable) -> bool:
         rel_speed = other.speed - self.speed
         rel_location = other.location - self.location
-
         return rel_speed.dot(rel_location) < 0 and rel_speed.magnitude > 0 and rel_location.magnitude > 0

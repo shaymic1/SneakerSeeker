@@ -74,15 +74,14 @@ class PathPlannerCircle(PathPlanner):
                 p.steer_left(self.curr_time - self.prev_time)
                 p.observation_direction = p.speed.angle
 
-    def __calc_frontal_line_for_circle_centers(self, turn_radius: float):
-        p1_lower = Vec2D(self.roi.location.x + self.roi.width - turn_radius,
-                         self.roi.location.y + turn_radius)
-        p2_upper = Vec2D(self.roi.location.x + self.roi.width - turn_radius,
-                         self.roi.location.y + self.roi.height - turn_radius)
+    def __calc_frontal_line_for_circle_centers(self, turn_radius: float, group_num: int):
+        x = (self.roi.location.x + self.roi.width - turn_radius * (1 + ((group_num - 1) * 6)))
+        p1_lower = Vec2D(x=x, y=(self.roi.location.y + turn_radius*2))
+        p2_upper = Vec2D(x=x, y=(self.roi.location.y + self.roi.height - turn_radius*2))
         return p1_lower, p2_upper
 
     def __set_destination_to_circle(self, players: list[Seeker]):
-        p1, p2 = self.__calc_frontal_line_for_circle_centers(players[0].turn_radius)
+        p1, p2 = self.__calc_frontal_line_for_circle_centers(players[0].turn_radius, players[0].group_num)
         middle_points = p1.points_between(other=p2, num_points=len(players))
         for player, loc in zip(players, middle_points):
             player.set_destination(dst=loc, new_speed=player.physical_specs.cruise_speed)

@@ -1,5 +1,5 @@
 {
-  "time_goal_ms": 260000,
+  "time_goal_ms": 300000,
   "time_step_ms": 100,
 
   "board": {"width": 14000, "height": 8000, "margin": 0},
@@ -13,14 +13,14 @@
   "seeker": {
     "groups": [
       {
-        "num": 8,
+        "num": 5,
         "data": {
           "group_num": 1,
           "los": 1000,
           "fov": 40,
           "catch_dist": 50,
           "physical_specs": {
-            "cruise_speed": 60,
+            "cruise_speed": 30,
             "max_speed": 100,
             "max_speed_time": 1200,
             "min_dist_between_eachother": 100,
@@ -43,15 +43,46 @@
             "delay_launch_time": 0
           }
         }
+      },
+      {
+        "num": 5,
+        "data": {
+          "group_num": 2,
+          "los": 1000,
+          "fov": 40,
+          "catch_dist": 50,
+          "physical_specs": {
+            "cruise_speed": 30,
+            "max_speed": 100,
+            "max_speed_time": 1200,
+            "min_dist_between_eachother": 100,
+            "turn_radius": 250
+          }
+        },
+        "deployer": {
+          "type": "singularity",
+          "data": {
+            "location": { "x": 2500, "y": 3500 },
+            "location2": { "x": 4500, "y": 5500 },
+            "mid": { "x": 5000, "y": 3500 }
+          }
+        },
+        "path_planner": {
+          "type":  "circle",
+          "data": {
+            "angle": 30,
+            "offset_from_ends_dkiz_frontal_line": 200,
+            "delay_launch_time": 0
+          }
+        }
       }
-
     ]
   },
 
   "sneaker": {
     "groups": [
       {
-        "num": 12,
+        "num": 10,
         "data": {
           "group_num": 1,
           "los": 100,
@@ -80,7 +111,7 @@
     "speed":{ "magnitude": 50, "angle": 180 },
     "shape":{
       "type": "circle",
-      "circle": {"radius":  500},
+      "circle": {"radius":  2000},
       "rectangle": {"width": 6000, "height": 100 }
     },
     "uncertainty_radius": 2400

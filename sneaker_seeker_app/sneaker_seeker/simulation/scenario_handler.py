@@ -12,14 +12,18 @@ from sneaker_seeker.visualization.canvas import Canvas
 def create_seekers_groups(scenario: dict) -> list[list[Seeker]]:
     groups: list[list[Seeker]] = []
     for group in scenario['seeker']['groups']:
-        groups.append([Seeker.from_dict(**group["data"]) for _ in range(group['num'])])
+        seekers = [Seeker.from_dict(**group["data"]) for _ in range(group['num'])]
+        if len(seekers) > 0:
+            groups.append(seekers)
     return groups
 
 
 def create_sneakers_groups(scenario: dict) -> list[list[Sneaker]]:
     groups: list[list[Sneaker]] = []
     for group in scenario['sneaker']['groups']:
-        groups.append([Sneaker.from_dict(**group["data"]) for _ in range(group['num'])])
+        sneakers = [Sneaker.from_dict(**group["data"]) for _ in range(group['num'])]
+        if len(sneakers) > 0:
+            groups.append(sneakers)
     return groups
 
 
