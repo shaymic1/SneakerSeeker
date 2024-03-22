@@ -13,68 +13,38 @@
   "seeker": {
     "groups": [
       {
-        "num": 5,
+        "num": 8,
         "data": {
           "group_num": 1,
-          "los": 600,
-          "fov": 120,
+          "los": 1000,
+          "fov": 40,
           "catch_dist": 50,
           "physical_specs": {
-            "cruise_speed": 50,
+            "cruise_speed": 60,
             "max_speed": 100,
-            "max_speed_time": 20,
-            "min_dist_between_eachother": 100
+            "max_speed_time": 1200,
+            "min_dist_between_eachother": 100,
+            "turn_radius": 250
           }
         },
         "deployer": {
-          "type": "triangle",
+          "type": "singularity",
           "data": {
-            "location": { "x": 4500, "y": 1500 },
+            "location": { "x": 2500, "y": 1500 },
             "location2": { "x": 4500, "y": 5500 },
             "mid": { "x": 5000, "y": 3500 }
           }
         },
         "path_planner": {
-          "type":  "straight_line",
+          "type":  "circle",
           "data": {
             "angle": 30,
             "offset_from_ends_dkiz_frontal_line": 200,
             "delay_launch_time": 0
           }
         }
-      },
-      {
-        "num": 7,
-        "data": {
-          "group_num": 1,
-          "los": 600,
-          "fov": 120,
-          "catch_dist": 50,
-          "physical_specs": {
-            "cruise_speed": 50,
-            "max_speed": 100,
-            "max_speed_time": 20,
-            "min_dist_between_eachother": 100
-          }
-        },
-        "deployer": {
-          "type": "triangle",
-          "data": {
-            "location": { "x": 3500, "y": 1500 },
-            "location2": { "x": 3500, "y": 5500 },
-            "mid": { "x": 4000, "y": 3500 }
-          }
-        },
-        "path_planner": {
-          "type":  "straight_line",
-          "data": {
-            "angle": 30,
-            "offset_from_ends_dkiz_frontal_line": 200,
-            "delay_launch_time": 0,
-            "delay_launch_detection": false
-          }
-        }
       }
+
     ]
   },
 
@@ -106,7 +76,7 @@
   },
 
   "dkiz": {
-    "location": { "x": 11000, "y": 3500},
+    "location": { "x": 15000, "y": 3500},
     "speed":{ "magnitude": 50, "angle": 180 },
     "shape":{
       "type": "circle",

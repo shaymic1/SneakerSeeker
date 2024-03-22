@@ -3,12 +3,14 @@ from sneaker_seeker.path_planner.path_planner_random_walk import PathPlannerRand
 from sneaker_seeker.path_planner.path_planner_strainght_line import PathPlannerStraightLine
 from sneaker_seeker.path_planner.path_planner_dkiz import PathPlannerDKIZ
 from sneaker_seeker.path_planner.path_planner_heuristic import PathPlannerHeuristic
+from sneaker_seeker.path_planner.path_planner_circles import PathPlannerCircle
 
 
 class PathPlannerFactory:
     __path_planners = {'straight_line': PathPlannerStraightLine,
                        'random_walk': PathPlannerRandomWalk,
                        'dkiz': PathPlannerDKIZ,
+                       'circle': PathPlannerCircle,
                        'heuristic': PathPlannerHeuristic}
 
     @staticmethod

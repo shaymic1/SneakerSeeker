@@ -12,8 +12,8 @@ from sneaker_seeker.common_types.vec2d import Vec2D
 
 
 class PlayerPhase(Enum):
-    HEADED_TO_FRONTAL_DKIZ_LINE = auto()
-    ALIGN_TO_HEAD_ON_SEARCH = auto()
+    HEADED_TO_CIRCLE = auto()
+    AROUND_THE_CIRCLE = auto()
     BACK_TO_BASE = auto()
 
 
@@ -23,13 +23,12 @@ class PlannerPhase(Enum):
     ON_AIR = auto()
 
 
-class PathPlannerHeuristic(PathPlanner):
+class PathPlannerCircle(PathPlanner):
 
-    def __init__(self, dkiz: DKIZ, roi: ROI, offset_from_ends_dkiz_frontal_line: float,
-                 delay_launch_time: float, delay_launch_detection=False, **_ignore) -> None:
+    def __init__(self, dkiz: DKIZ, roi: ROI, delay_launch_time: float, delay_launch_detection=False, **_ignore) -> None:
         self.dkiz: DKIZ = dkiz
         self.roi: ROI = roi
-        self.offset_from_ends_dkiz_frontal_line = offset_from_ends_dkiz_frontal_line
+        self.prev_time = None
         self.curr_time = None
         self.players_base: Vec2D()
         self.delay_launch_time: float = delay_launch_time
@@ -43,6 +42,7 @@ class PathPlannerHeuristic(PathPlanner):
         }
 
     def set_path(self, players: list[Seeker], time: float, has_detection: bool) -> None:
+        self.prev_time = self.curr_time
         self.curr_time = time
         self.has_detection = has_detection
         self.phase_func[self.planner_phase](players)
@@ -56,49 +56,40 @@ class PathPlannerHeuristic(PathPlanner):
 
     def __set_first_path(self, players: list[Seeker]):
         self.players_base = players[0].location
-        self.__set_destination_to_frontal_dkiz_line(players)
+        self.__set_destination_to_circle(players)
         self.planner_phase = PlannerPhase(self.planner_phase.value + 1)
         for p in players:
-            self.player_phase[p] = PlayerPhase.HEADED_TO_FRONTAL_DKIZ_LINE
+            self.player_phase[p] = PlayerPhase.HEADED_TO_CIRCLE
 
     def __on_air(self, players: list[Seeker]):
         for p in players:
-            if self.player_phase[p] in [PlayerPhase.ALIGN_TO_HEAD_ON_SEARCH, PlayerPhase.HEADED_TO_FRONTAL_DKIZ_LINE]:
+            if self.player_phase[p] is PlayerPhase.HEADED_TO_CIRCLE:
                 x1, y1 = self.roi.location.x, self.roi.location.y
                 x2, y2 = x1 + self.roi.width, y1 + self.roi.height
                 if not utils.point_in_roi(p.location, x1, x2, y1, y2) and p.state != Seeker.State.CATCH:
                     p.halt()
-                    p.state = Seeker.State.SWAY
                 if p.destination is not None and p.destination.arrived:
-                    p.speed.angle = utils.calc_angle(x=-self.dkiz.speed.x, y=-self.dkiz.speed.y)
-                    p.observation_direction = p.speed.angle
-                    self.player_phase[p] = PlayerPhase.ALIGN_TO_HEAD_ON_SEARCH
+                    self.player_phase[p] = PlayerPhase.AROUND_THE_CIRCLE
+            if self.player_phase[p] is PlayerPhase.AROUND_THE_CIRCLE and p.state != Seeker.State.CATCH:
+                p.steer_left(self.curr_time - self.prev_time)
+                p.observation_direction = p.speed.angle
 
-            # if self.player_phase[p] == PlayerPhase.ALIGN_TO_HEAD_ON_SEARCH:
-            # if self.__is_passed_DKIZ(p):
-            #     p.set_destination(self.players_base)
-            #     self.player_phase[p] = PlayerPhase.BACK_TO_BASE
-            #     p.state = Seeker.State.BACK_TO_BASE
+    def __calc_frontal_line_for_circle_centers(self, turn_radius: float):
+        p1_lower = Vec2D(self.roi.location.x + self.roi.width - turn_radius,
+                         self.roi.location.y + turn_radius)
+        p2_upper = Vec2D(self.roi.location.x + self.roi.width - turn_radius,
+                         self.roi.location.y + self.roi.height - turn_radius)
+        return p1_lower, p2_upper
 
-    def __set_destination_to_frontal_dkiz_line(self, players: list[Seeker]):
-        p1, p2 = self.dkiz.r_frontal_line.location, self.dkiz.l_frontal_line.location
-        middle_points = p1.points_between(other=p2, num_points=len(players),
-                                          offset_from_ends=self.offset_from_ends_dkiz_frontal_line)
+    def __set_destination_to_circle(self, players: list[Seeker]):
+        p1, p2 = self.__calc_frontal_line_for_circle_centers(players[0].turn_radius)
+        middle_points = p1.points_between(other=p2, num_points=len(players))
         for player, loc in zip(players, middle_points):
-            player_speed = player.physical_specs.cruise_speed
-            if possible_results := utils.calc_possible_collision_point_and_time(
-                    trgt_loc=loc, trgt_spd=self.dkiz.speed, friendly_loc=player.location,
-                    friendly_spd=player_speed):
-                collision_point, arrival_time = possible_results
-                player.set_destination(dst=collision_point, new_speed=player_speed, arrival_time=arrival_time)
-                player.observation_direction = player.speed.angle
+            player.set_destination(dst=loc, new_speed=player.physical_specs.cruise_speed)
+            player.observation_direction = player.speed.angle
 
     @staticmethod
     def __starting_phase(delay_launch_time, delay_launch_detection):
         if delay_launch_time > 0 or delay_launch_detection:
             return PlannerPhase.DELAY_LAUNCH
         return PlannerPhase.SET_FIRST_PATH
-
-    def __is_passed_DKIZ(self, player: Seeker):
-        is_outside_DKIZ = player.location.distance_to(self.dkiz.location) > self.dkiz.max_dist_from_center
-        return is_outside_DKIZ and not player.is_getting_closer(self.dkiz)

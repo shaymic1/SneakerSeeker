@@ -109,7 +109,6 @@ class Vec2D:
             the return value is a list of equal distance points.
 
             note: if n=1 the return value will be a single middle point."""
-
         if num_points == 1:
             return [self.middle_point(other)]
         angle = self.relative_angle(other, radian=True)

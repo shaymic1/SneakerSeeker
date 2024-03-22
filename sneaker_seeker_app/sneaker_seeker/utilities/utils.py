@@ -11,7 +11,6 @@ import cv2
 from typing import Optional, Tuple, Any
 
 from sneaker_seeker.common_types.vec2d import Vec2D
-from sneaker_seeker.game_obj.roi import ROI
 
 
 class JsonReader:
@@ -178,11 +177,8 @@ def calc_possible_collision_point_and_time(trgt_loc: Vec2D, trgt_spd: Vec2D,
     return None
 
 
-def point_in_roi(point: Vec2D, roi: ROI):
-    x1, y1 = roi.location.x, roi.location.y
-    x2, y2 = x1 + roi.width, y1 + roi.height
-    x, y = point.x, point.y
-    return x1 <= x <= x2 and y1 <= y <= y2
+def point_in_roi(point: Vec2D, x1, x2, y1, y2):
+    return x1 <= point.x <= x2 and y1 <= point.y <= y2
 
 
 def point_in_rectangle(point: Vec2D, x1: float, y1: float, width: float, height: float):

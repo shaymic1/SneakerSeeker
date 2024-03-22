@@ -7,7 +7,7 @@ class Player(Movable):
 
     def __init__(self, physical_specs: PhysicalSpecs, group_num: int, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D(),
                  los: float = 100, fov: float = 180, observation_direction: float = None) -> None:
-        super().__init__(location, speed)
+        super().__init__(location, speed, physical_specs.turn_radius)
         self.physical_specs: PhysicalSpecs = physical_specs
         self.observation_direction: float = observation_direction
         self.los: float = los
@@ -21,4 +21,3 @@ class Player(Movable):
 
     def observe_to_location(self, trgt: Vec2D):
         self.observation_direction = self.location.relative_angle(trgt)
-

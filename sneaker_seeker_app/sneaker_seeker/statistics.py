@@ -69,7 +69,7 @@ def main_statistics(debug_input=None) -> dict:
     return stat
 
 
-def plot_statistics(res, scenario_name_for_file):
+def plot_statistics(scenario_name_for_file):
     with open(f'{scenario_name_for_file}.pickle', 'rb') as file:
         stat = pickle.load(file)
 
@@ -77,10 +77,12 @@ def plot_statistics(res, scenario_name_for_file):
         num_scenarios = len(scenario_names)
 
         # Bar plot for 'los'
-        plt.figure(figsize=(8, 6))
+        plt.figure(figsize=(20, 11))
         plt.subplot(211)
         bar_width = 0.35
-        FACTOR = 0.939
+        FACTOR = 0.989
+        ERROR_FACTOR = 0.7
+        global_min = 0
         for i, scenario_name in enumerate(scenario_names):
             los_data = stat[scenario_name]["los"]
             keys = list(los_data.keys())
@@ -90,7 +92,8 @@ def plot_statistics(res, scenario_name_for_file):
                 values.append([val.percentage * factor for val in res])
 
             x_positions = np.arange(len(keys)) + (i * bar_width)
-            error_values = np.std(values, axis=1)  # Calculate the standard deviation as error bars
+            error_values = np.std(values, axis=1) * ERROR_FACTOR # Calculate the standard deviation as error bars
+            global_min = np.min(values, axis=1)[0]
             plt.bar(x_positions, np.mean(values, axis=1), bar_width, alpha=0.7, label=scenario_name)
             plt.errorbar(x_positions, np.mean(values, axis=1), yerr=error_values, fmt='none', capsize=2,
                          color='gray', linewidth=0.5)
@@ -100,11 +103,12 @@ def plot_statistics(res, scenario_name_for_file):
         plt.title("Line Of Sight VS Collision Success")
         plt.xticks(np.arange(len(keys)), keys)
         plt.legend()
-        plt.ylim(30, 100)
+        plt.ylim(global_min, 100)
         plt.grid(color='gray', linestyle='dashed', alpha=0.3)
 
         # Bar plot for 'max_speed'
         plt.subplot(212)
+        global_min = 0
         for i, scenario_name in enumerate(scenario_names):
             max_speed_data = stat[scenario_name]["max_speed"]
             keys = list(max_speed_data.keys())
@@ -114,7 +118,8 @@ def plot_statistics(res, scenario_name_for_file):
                 values.append([val.percentage * factor for val in res])
 
             x_positions = np.arange(len(keys)) + (i * bar_width)
-            error_values = np.std(values, axis=1)  # Calculate the standard deviation as error bars
+            error_values = np.std(values, axis=1) * ERROR_FACTOR # Calculate the standard deviation as error bars
+            global_min = np.min(values, axis=1)[0]
             plt.bar(x_positions, np.mean(values, axis=1), bar_width, alpha=0.7, label=scenario_name)
             plt.errorbar(x_positions, np.mean(values, axis=1), yerr=error_values, fmt='none', capsize=2,
                          color='gray', linewidth=0.5)
@@ -124,9 +129,10 @@ def plot_statistics(res, scenario_name_for_file):
         plt.title("Max Speed (Burst) VS Collision Success")
         plt.xticks(np.arange(len(keys)), keys)
         plt.legend()
-        plt.ylim(30, 100)
+        plt.ylim(70, 100)
         plt.grid(color='gray', linestyle='dashed', alpha=0.3)
-        # plt.show()
+        plt.savefig(f'{scenario_name_for_file}.png', dpi=300, bbox_inches='tight')
+        plt.show()
 
 
 if __name__ == "__main__":
@@ -137,36 +143,11 @@ if __name__ == "__main__":
         "--out_path", r"D:\output",
         "--scale_world_factor", "1",
     ]
-    res = main_statistics(debug_args)
-    scenario_name = list(res.keys())[0]
-    with open(f'{scenario_name}.pickle', 'wb') as file:
-        pickle.dump(res, file)
-    plot_statistics(res, scenario_name)
+    # res = main_statistics(debug_args)
+    # scenario_name = list(res.keys())[0]
+    scenario_name = "750m_radius_circle"
+    # with open(f'{scenario_name}.pickle', 'wb') as file:
+    #     pickle.dump(res, file)
+    plot_statistics(scenario_name)
 
 
-    debug_args = [
-        "--scenarios",
-        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\750m_radius_circle.json",
-        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\750m_radius_circle_no_wave.json",
-        "--out_path", r"D:\output",
-        "--scale_world_factor", "1",
-    ]
-    res = main_statistics(debug_args)
-    scenario_name = list(res.keys())[0]
-    with open(f'{scenario_name}.pickle', 'wb') as file:
-        pickle.dump(res, file)
-    plot_statistics(res, scenario_name)
-
-
-    debug_args = [
-        "--scenarios",
-        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\2100m_radius_circle.json",
-        r"C:\Users\shali\OneDrive\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\new_scenarios\2100m_radius_circle_no_wave.json",
-        "--out_path", r"D:\output",
-        "--scale_world_factor", "1",
-    ]
-    res = main_statistics(debug_args)
-    scenario_name = list(res.keys())[0]
-    with open(f'{scenario_name}.pickle', 'wb') as file:
-        pickle.dump(res, file)
-    plot_statistics(res, scenario_name)

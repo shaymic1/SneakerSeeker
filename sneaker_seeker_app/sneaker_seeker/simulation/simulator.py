@@ -147,6 +147,7 @@ class Simulator:
     def __set_assignments(assignments: dict[Seeker, Tuple[Sneaker, Vec2D, float]]):
         for seeker, (sneaker, point, time) in assignments.items():
             seeker.state = Seeker.State.CATCH
+            seeker.form = Seeker.Form.DRONE
             sneaker.state = Sneaker.State.TARGETED
             seeker.set_destination(dst=point, new_speed=seeker.physical_specs.max_speed, arrival_time=time)
 

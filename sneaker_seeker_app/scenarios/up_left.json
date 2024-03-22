@@ -15,6 +15,7 @@
       {
         "num": 8,
         "data": {
+          "group_num": 1,
           "los": 600,
           "fov": 120,
           "catch_dist": 50,

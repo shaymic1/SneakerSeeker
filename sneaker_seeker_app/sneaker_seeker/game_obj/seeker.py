@@ -7,6 +7,10 @@ from sneaker_seeker.common_types.vec2d import Vec2D
 
 
 class Seeker(Player):
+    class Form(StrEnum):
+        PLAIN = auto()
+        DRONE = auto()
+
     class State(StrEnum):
         MOVE = auto()
         HALT = auto()
@@ -22,10 +26,11 @@ class Seeker(Player):
                          fov=fov, observation_direction=observation_direction)
         self.sway_mid_axis = observation_direction
         self.max_sway_tilt_from_axis = (180 - self.fov) / 2
-        self.swaying_theta_dot = 10                                 # [degree/ms]
-        self.swaying_clockwise = 1                                  # should be 1 or -1
+        self.swaying_theta_dot = 10  # [degree/ms]
+        self.swaying_clockwise = 1  # should be 1 or -1
         self.catch_dist = catch_dist
         self._state = Seeker.State.SEEK
+        self._form = Seeker.Form.PLAIN
 
     @classmethod
     def from_dict(cls, physical_specs: dict, group_num: int, location: dict = None, speed: dict = None,
@@ -39,6 +44,18 @@ class Seeker(Player):
                    catch_dist=catch_dist, observation_direction=obser_dir)
 
     @property
+    def form(self):
+        return self._form
+
+    @form.setter
+    def form(self, new_form: Seeker.State):
+        self._form = new_form
+        if new_form == Seeker.Form.PLAIN:
+            self.turn_radius = 250
+        if new_form == Seeker.Form.DRONE:
+            self.turn_radius = 0
+
+    @property
     def state(self):
         return self._state
 
@@ -48,7 +65,6 @@ class Seeker(Player):
             self.sway_mid_axis = self.observation_direction
         else:
             self.observation_direction = self.sway_mid_axis
-
         # if new_state == Seeker.State.CATCH:
         #     self.fov = 40
         self._state = new_state
@@ -62,6 +78,7 @@ class Seeker(Player):
 
     def advance(self, dt: float) -> None:
         super().advance(dt)
+
     #     if self.state == Seeker.State.SWAY:
     #         self.sway(dt)
 
@@ -72,8 +89,3 @@ class Seeker(Player):
             self.swaying_clockwise *= -1
             delta_theta *= self.swaying_clockwise
         self.observation_direction += delta_theta
-
-
-
-
-

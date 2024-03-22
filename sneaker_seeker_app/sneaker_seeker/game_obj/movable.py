@@ -8,11 +8,12 @@ from sneaker_seeker.common_types.destination import Destination
 class Movable:
     last_id = 0
 
-    def __init__(self, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D()) -> None:
+    def __init__(self, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D(), turn_radius: float = 0) -> None:
         Movable.last_id += 1
         self.id = Movable.last_id
         self.location: Vec2D = location
         self.speed: Vec2D = speed
+        self.turn_radius = turn_radius
         self.destination: Destination = None
 
     def __hash__(self):
@@ -27,8 +28,14 @@ class Movable:
             self.destination.arrival_time -= dt
             self.destination.arrived = (self.destination.arrival_time < dt)
 
-    def steer_to(self, location: Vec2D) -> None:
+    def steer_to_destination(self, location: Vec2D) -> None:
         self.speed.angle = utils.calc_angle(x=(location.x - self.location.x), y=(location.y - self.location.y))
+
+    def steer_left(self, dt: float):
+        if self.turn_radius <= 0:
+            raise Exception("cannot steer when there is no turn radius.")
+        delta_theta = (dt * self.speed.magnitude * 20) / (360 * self.turn_radius)
+        self.speed.angle = (self.speed.angle + delta_theta) % 360
 
     def set_destination(self, dst: Vec2D, new_speed: float = None, arrival_time: float = None) -> None:
         self.speed.angle = utils.calc_angle(x=(dst.x - self.location.x), y=(dst.y - self.location.y))
