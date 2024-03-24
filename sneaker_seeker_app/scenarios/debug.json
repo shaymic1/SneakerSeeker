@@ -30,7 +30,7 @@
         "deployer": {
           "type": "singularity",
           "data": {
-            "location": { "x": 2500, "y": 1500 },
+            "location": { "x": 3500, "y": 1500 },
             "location2": { "x": 4500, "y": 5500 },
             "mid": { "x": 5000, "y": 3500 }
           }
@@ -62,7 +62,7 @@
         "deployer": {
           "type": "singularity",
           "data": {
-            "location": { "x": 2500, "y": 3500 },
+            "location": { "x": 1500, "y": 3500 },
             "location2": { "x": 4500, "y": 5500 },
             "mid": { "x": 5000, "y": 3500 }
           }
@@ -195,8 +195,8 @@
       "roi": { "linewidth": 2, "edgecolor": "green", "facecolor": "none" },
 
       "dkiz": {
-        "inner_circle": {"linewidth": 0.5, "edgecolor": "red", "facecolor": "none", "alpha": 0.5},
-        "frontal_line": {"alpha": 1}
+        "inner_circle": {"linewidth": 0.0, "edgecolor": "red", "facecolor": "none", "alpha": 0.5},
+        "frontal_line": {"alpha": 0.0}
       }
     }
   }
