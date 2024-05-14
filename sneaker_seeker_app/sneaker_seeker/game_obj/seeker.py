@@ -28,6 +28,7 @@ class Seeker(Player):
         self.max_sway_tilt_from_axis = (180 - self.fov) / 2
         self.swaying_theta_dot = 10  # [degree/ms]
         self.swaying_clockwise = 1  # should be 1 or -1
+        self.drone_formation_time = 3
         self.catch_dist = catch_dist
         self._state = Seeker.State.SEEK
         self._form = Seeker.Form.PLAIN
