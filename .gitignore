@@ -12,7 +12,8 @@ app/sandbox.py
 app/TODO.txt
 sneaker_seeker_app/SneakerSeeker.egg-info/
 *.mp4
-*.pickle
+
 *.pptx
 *.gif
 SSvideos/
+*.png

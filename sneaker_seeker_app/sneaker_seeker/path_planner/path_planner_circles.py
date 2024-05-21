@@ -71,7 +71,7 @@ class PathPlannerCircle(PathPlanner):
                 if p.destination is not None and p.destination.arrived:
                     self.player_phase[p] = PlayerPhase.AROUND_THE_CIRCLE
             if self.player_phase[p] is PlayerPhase.AROUND_THE_CIRCLE and p.state != Seeker.State.CATCH:
-                p.steer_left(self.curr_time - self.prev_time)
+                p.steer(dt=self.curr_time-self.prev_time, direction=Seeker.Steer.LEFT)
                 p.observation_direction = p.speed.angle
 
     def __calc_frontal_line_for_circle_centers(self, turn_radius: float, group_num: int):

@@ -45,7 +45,7 @@ if __name__ == "__main__":
         # fr"C:\Users\{user_name}\{drive_name}\code\python\SneakerSeeker\sneaker_seeker_app\scenarios\massive_attack.json",
         "--out_path", r"D:\output",
         "--scale_world_factor", "1",
-        "--speed_up_video", "5",
+        "--speed_up_video", "2",
         "--save_frame_every_n_step", "20",
         "--play_video",
         # "--keep_frames"

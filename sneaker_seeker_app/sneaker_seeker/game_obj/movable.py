@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import math
+from enum import Enum, auto
+
 from sneaker_seeker.utilities import utils
 from sneaker_seeker.common_types.vec2d import Vec2D
 from sneaker_seeker.common_types.destination import Destination
@@ -7,6 +10,11 @@ from sneaker_seeker.common_types.destination import Destination
 
 class Movable:
     last_id = 0
+
+    class Steer(Enum):
+        RIGHT = auto()
+        LEFT = auto()
+
 
     def __init__(self, location: Vec2D = Vec2D(), speed: Vec2D = Vec2D(), turn_radius: float = 0) -> None:
         Movable.last_id += 1
@@ -31,10 +39,13 @@ class Movable:
     def steer_to_destination(self, location: Vec2D) -> None:
         self.speed.angle = utils.calc_angle(x=(location.x - self.location.x), y=(location.y - self.location.y))
 
-    def steer_left(self, dt: float):
+    def steer(self, dt: float, direction: Movable.Steer):
         if self.turn_radius <= 0:
             raise Exception("cannot steer when there is no turn radius.")
-        delta_theta = (dt * self.speed.magnitude * 20) / (360 * self.turn_radius)
+        dx = (dt/1000) * self.speed.magnitude
+        delta_theta = 360 * (dx / (2 * math.pi * self.turn_radius))
+        if direction == Movable.Steer.RIGHT:
+            delta_theta *= -1
         self.speed.angle = (self.speed.angle + delta_theta) % 360
 
     def set_destination(self, dst: Vec2D, new_speed: float = None, arrival_time: float = None) -> None:
