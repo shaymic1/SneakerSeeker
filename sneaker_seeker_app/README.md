@@ -12,3 +12,5 @@ Just run `./sneaker_seeker/__main__.py` file.
 ## Run in CLI
 run the command `ssgame` with the relevent inputs.
 * you can run `ssgame -h` to see the help page.
+
+* 
